@@ -125,11 +125,31 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       tauB->ptSumPFChargedHadronsIsoCone = it->isolationPFChargedHadrCandsPtSum();
       tauB->ptSumPhotonsIsoCone          = it->isolationPFGammaCandsEtSum();
 
+      // Isolation Candidates
+      int indx = 0;
+      const reco::PFCandidateRefVector& cvList = it->isolationPFChargedHadrCands();
+      for (reco::PFCandidateRefVector::const_iterator iCand  = cvList.begin(); 
+    	                                              iCand != cvList.end(); ++iCand,indx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (indx < vhtm::Tau::kMaxPFChargedCand) {
+          tauB->isoChCandPt[indx]  = cand.pt();
+          tauB->isoChCandEta[indx] = cand.eta();
+          tauB->isoChCandPhi[indx] = cand.phi();
+        }
+      }  
+      
       double ptSum = 0;
+      int jndx = 0;
       const reco::PFCandidateRefVector& nvList = it->isolationPFNeutrHadrCands();
       for (reco::PFCandidateRefVector::const_iterator iCand  = nvList.begin(); 
-                                                      iCand != nvList.end(); ++iCand) {
-	ptSum += std::abs((**iCand).pt());
+      	                                              iCand != nvList.end(); ++iCand,jndx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (jndx < vhtm::Tau::kMaxPFNeutralCand) {
+          tauB->isoNeuCandPt[jndx]  = cand.pt();
+          tauB->isoNeuCandEta[jndx] = cand.eta();
+          tauB->isoNeuCandPhi[jndx] = cand.phi();
+        }
+	ptSum += std::abs(cand.pt());
       }  
       tauB->ptSumPFNeutralHadronsIsoCone = ptSum;
 

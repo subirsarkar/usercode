@@ -109,10 +109,10 @@ namespace vhtm {
     double relIso;
     double pfRelIso;
   
-    // PFlow isolation variable
-    float chargedHadronIso;
-    float neutralHadronIso;
-    float photonIso;
+     // PFlow isolation variable
+     float chargedHadronIso;
+     float neutralHadronIso;
+     float photonIso;
 
        int missingHits;
 
@@ -200,6 +200,10 @@ namespace vhtm {
     Tau();
     ~Tau() {}
   
+    enum {
+      kMaxPFChargedCand = 40,
+      kMaxPFNeutralCand = 20
+    };
     double eta;
     double phi;
     double pt;
@@ -231,61 +235,67 @@ namespace vhtm {
        int numNeutralHadronsSignalCone;
        int numPhotonsSignalCone;
        int numParticlesSignalCone;
-       //int numPi0SignalCone;
        int numChargedHadronsIsoCone;
        int numNeutralHadronsIsoCone;
        int numPhotonsIsoCone;
        int numParticlesIsoCone;
-       //int numPi0IsoCone;
     double ptSumPFChargedHadronsIsoCone;
     double ptSumPFNeutralHadronsIsoCone;
     double ptSumPhotonsIsoCone;
     
-    // tau id. discriminators
+    double isoChCandPt[kMaxPFChargedCand];
+    double isoChCandEta[kMaxPFChargedCand];
+    double isoChCandPhi[kMaxPFChargedCand];
+
+    double isoNeuCandPt[kMaxPFNeutralCand];
+    double isoNeuCandEta[kMaxPFNeutralCand];
+    double isoNeuCandPhi[kMaxPFNeutralCand];
+
+     // tau id. discriminators
      float decayModeFinding;
      float looseIsolation;
      float mediumIsolation;
      float tightIsolation;
   
-    // discriminators against electrons/muons
-    float againstMuonLoose;
-    float againstMuonTight;
-    float againstElectronLoose; 
-    float againstElectronMedium; 
-    float againstElectronTight; 
-    float pfElectronMVA;
-    float againstElectronMVA;
+     // discriminators against electrons/muons
+     float againstMuonLoose;
+     float againstMuonTight;
+     float againstElectronLoose; 
+     float againstElectronMedium; 
+     float againstElectronTight; 
+     float pfElectronMVA;
+     float againstElectronMVA;
   
-    float byVLooseCombinedIsolationDeltaBetaCorr;
-    float byLooseCombinedIsolationDeltaBetaCorr;
-    float byMediumCombinedIsolationDeltaBetaCorr;
-    float byTightCombinedIsolationDeltaBetaCorr;
-    float byVLooseIsolationDeltaBetaCorr;
-    float byLooseIsolationDeltaBetaCorr;
-    float byMediumIsolationDeltaBetaCorr;
-    float byTightIsolationDeltaBetaCorr;
+     float byVLooseCombinedIsolationDeltaBetaCorr;
+     float byLooseCombinedIsolationDeltaBetaCorr;
+     float byMediumCombinedIsolationDeltaBetaCorr;
+     float byTightCombinedIsolationDeltaBetaCorr;
+     float byVLooseIsolationDeltaBetaCorr;
+     float byLooseIsolationDeltaBetaCorr;
+     float byMediumIsolationDeltaBetaCorr;
+     float byTightIsolationDeltaBetaCorr;
   
-    // MVA Isolation
-    float byLooseIsolationMVA;
-    float byMediumIsolationMVA;
-    float byTightIsolationMVA;
+     // MVA Isolation
+     float byLooseIsolationMVA;
+     float byMediumIsolationMVA;
+     float byTightIsolationMVA;
 
-    // kinematic variables for PFJet associated to PFTau
+     // kinematic variables for PFJet associated to PFTau
     double jetPt;
     double jetEta;
     double jetPhi;
   
-    float emFraction;
-    float maximumHCALPFClusterEt;
-    float ecalStripSumEOverPLead;
-    float bremsRecoveryEOverPLead;
-    float hcalTotOverPLead;
-    float hcalMaxOverPLead;
-    float hcal3x3OverPLead;
+     float emFraction;
+     float maximumHCALPFClusterEt;
+     float ecalStripSumEOverPLead;
+     float bremsRecoveryEOverPLead;
+     float hcalTotOverPLead;
+     float hcalMaxOverPLead;
+     float hcal3x3OverPLead;
   
-    float etaetaMoment;
-    float phiphiMoment;
-    float etaphiMoment;
+     float etaetaMoment;
+     float phiphiMoment;
+     float etaphiMoment;
   
     double vx;
     double vy;
@@ -424,7 +434,7 @@ namespace vhtm {
        int ntracksw05;
       bool isfake;
       bool isvalid;
-      double sumPt; // vector sum
+    double sumPt; // vector sum
   
        int selbit;
 
@@ -469,18 +479,18 @@ namespace vhtm {
        int pixelLayersWithMeasurement;
        int stripLayersWithMeasurement;
   
-       double dxy;
-       double dxyError;
-       double dz;
-       double dzError;
+    double dxy;
+    double dxyError;
+    double dz;
+    double dzError;
   
-       double chi2;
-          int ndof;
-       double vx;
-       double vy;
-       double vz;
+    double chi2;
+       int ndof;
+    double vx;
+    double vy;
+    double vz;
   
-          int selbit; 
+       int selbit; 
          
     ClassDef(Track, 1)
   };

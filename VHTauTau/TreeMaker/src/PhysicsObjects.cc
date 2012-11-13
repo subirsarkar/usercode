@@ -217,7 +217,14 @@ vhtm::Tau::Tau():
   vx(-999), vy(-999), vz(-999),
   zvertex(-999), ltsipt(-999),
   selbit(0) 
-{}
+{
+  for (int i = 0; i < kMaxPFChargedCand; ++i) {
+    isoChCandPt[i] = isoChCandEta[i] = isoChCandPhi[i] = -10;
+  }
+  for (int i = 0; i < kMaxPFNeutralCand; ++i) {
+    isoNeuCandPt[i] = isoNeuCandEta[i] = isoNeuCandPhi[i] = -10;
+  }
+}
 vhtm::Muon::Muon() :
   eta(-999),
   phi(-999),
