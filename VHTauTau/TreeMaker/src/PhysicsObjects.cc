@@ -219,10 +219,14 @@ vhtm::Tau::Tau():
   selbit(0) 
 {
   for (int i = 0; i < kMaxPFChargedCand; ++i) {
-    isoChCandPt[i] = isoChCandEta[i] = isoChCandPhi[i] = -10;
+    sigChHadCandPt[i] = sigChHadCandEta[i] = sigChHadCandPhi[i] = 
+    isoChHadCandPt[i] = isoChHadCandEta[i] = isoChHadCandPhi[i] = -10;
   }
   for (int i = 0; i < kMaxPFNeutralCand; ++i) {
-    isoNeuCandPt[i] = isoNeuCandEta[i] = isoNeuCandPhi[i] = -10;
+    sigNeHadCandPt[i] = sigNeHadCandEta[i] = sigNeHadCandPhi[i] =
+    isoNeHadCandPt[i] = isoNeHadCandEta[i] = isoNeHadCandPhi[i] =
+    sigGammaCandPt[i] = sigGammaCandEta[i] = sigGammaCandPhi[i] =
+    isoGammaCandPt[i] = isoGammaCandEta[i] = isoGammaCandPhi[i] = -10;
   }
 }
 vhtm::Muon::Muon() :

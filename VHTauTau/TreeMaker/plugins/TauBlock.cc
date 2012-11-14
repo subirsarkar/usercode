@@ -125,33 +125,79 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       tauB->ptSumPFChargedHadronsIsoCone = it->isolationPFChargedHadrCandsPtSum();
       tauB->ptSumPhotonsIsoCone          = it->isolationPFGammaCandsEtSum();
 
-      // Isolation Candidates
+      // Signal Constituents
+      // Charged hadrons
       int indx = 0;
-      const reco::PFCandidateRefVector& cvList = it->isolationPFChargedHadrCands();
-      for (reco::PFCandidateRefVector::const_iterator iCand  = cvList.begin(); 
-    	                                              iCand != cvList.end(); ++iCand,indx++) {
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->signalPFChargedHadrCands().begin(); 
+    	                                              iCand != it->signalPFChargedHadrCands().end(); ++iCand,indx++) {
         const reco::PFCandidate& cand = (**iCand);
         if (indx < vhtm::Tau::kMaxPFChargedCand) {
-          tauB->isoChCandPt[indx]  = cand.pt();
-          tauB->isoChCandEta[indx] = cand.eta();
-          tauB->isoChCandPhi[indx] = cand.phi();
+          tauB->sigChHadCandPt[indx]  = cand.pt();
+          tauB->sigChHadCandEta[indx] = cand.eta();
+          tauB->sigChHadCandPhi[indx] = cand.phi();
+        }
+      }  
+      // Neutral hadrons
+      indx = 0; // reset
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->signalPFNeutrHadrCands().begin(); 
+    	                                              iCand != it->signalPFNeutrHadrCands().end(); ++iCand,indx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (indx < vhtm::Tau::kMaxPFNeutralCand) {
+          tauB->sigNeHadCandPt[indx]  = cand.pt();
+          tauB->sigNeHadCandEta[indx] = cand.eta();
+          tauB->sigNeHadCandPhi[indx] = cand.phi();
+        }
+      }  
+      // Photons
+      indx = 0; // reset
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->signalPFGammaCands().begin(); 
+    	                                              iCand != it->signalPFGammaCands().end(); ++iCand,indx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (indx < vhtm::Tau::kMaxPFNeutralCand) {
+          tauB->sigGammaCandPt[indx]  = cand.pt();
+          tauB->sigGammaCandEta[indx] = cand.eta();
+          tauB->sigGammaCandPhi[indx] = cand.phi();
+        }
+      }  
+      // Isolation Constituents
+      // Charged hadrons
+      indx = 0; // reset
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->isolationPFChargedHadrCands().begin(); 
+    	                                              iCand != it->isolationPFChargedHadrCands().end(); ++iCand,indx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (indx < vhtm::Tau::kMaxPFChargedCand) {
+          tauB->isoChHadCandPt[indx]  = cand.pt();
+          tauB->isoChHadCandEta[indx] = cand.eta();
+          tauB->isoChHadCandPhi[indx] = cand.phi();
         }
       }  
       
+      // Neutral hadrons
       double ptSum = 0;
-      int jndx = 0;
-      const reco::PFCandidateRefVector& nvList = it->isolationPFNeutrHadrCands();
-      for (reco::PFCandidateRefVector::const_iterator iCand  = nvList.begin(); 
-      	                                              iCand != nvList.end(); ++iCand,jndx++) {
+      indx = 0; // reset
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->isolationPFNeutrHadrCands().begin(); 
+	                                              iCand != it->isolationPFNeutrHadrCands().end(); ++iCand,indx++) {
         const reco::PFCandidate& cand = (**iCand);
-        if (jndx < vhtm::Tau::kMaxPFNeutralCand) {
-          tauB->isoNeuCandPt[jndx]  = cand.pt();
-          tauB->isoNeuCandEta[jndx] = cand.eta();
-          tauB->isoNeuCandPhi[jndx] = cand.phi();
+        if (indx < vhtm::Tau::kMaxPFNeutralCand) {
+          tauB->isoNeHadCandPt[indx]  = cand.pt();
+          tauB->isoNeHadCandEta[indx] = cand.eta();
+          tauB->isoNeHadCandPhi[indx] = cand.phi();
         }
 	ptSum += std::abs(cand.pt());
       }  
       tauB->ptSumPFNeutralHadronsIsoCone = ptSum;
+
+      // Photons
+      indx = 0; // reset
+      for (reco::PFCandidateRefVector::const_iterator iCand  = it->isolationPFGammaCands().begin(); 
+      	                                              iCand != it->isolationPFGammaCands().end(); ++iCand,indx++) {
+        const reco::PFCandidate& cand = (**iCand);
+        if (indx < vhtm::Tau::kMaxPFNeutralCand) {
+          tauB->isoGammaCandPt[indx]  = cand.pt();
+          tauB->isoGammaCandEta[indx] = cand.eta();
+          tauB->isoGammaCandPhi[indx] = cand.phi();
+        }
+      }  
 
       // tau id. discriminators
       tauB->decayModeFinding = it->tauID("decayModeFinding");

@@ -243,13 +243,25 @@ namespace vhtm {
     double ptSumPFNeutralHadronsIsoCone;
     double ptSumPhotonsIsoCone;
     
-    double isoChCandPt[kMaxPFChargedCand];
-    double isoChCandEta[kMaxPFChargedCand];
-    double isoChCandPhi[kMaxPFChargedCand];
+    double sigChHadCandPt[kMaxPFChargedCand];
+    double sigChHadCandEta[kMaxPFChargedCand];
+    double sigChHadCandPhi[kMaxPFChargedCand];
+    double sigNeHadCandPt[kMaxPFNeutralCand];
+    double sigNeHadCandEta[kMaxPFNeutralCand];
+    double sigNeHadCandPhi[kMaxPFNeutralCand];
+    double sigGammaCandPt[kMaxPFNeutralCand];
+    double sigGammaCandEta[kMaxPFNeutralCand];
+    double sigGammaCandPhi[kMaxPFNeutralCand];
 
-    double isoNeuCandPt[kMaxPFNeutralCand];
-    double isoNeuCandEta[kMaxPFNeutralCand];
-    double isoNeuCandPhi[kMaxPFNeutralCand];
+    double isoChHadCandPt[kMaxPFChargedCand];
+    double isoChHadCandEta[kMaxPFChargedCand];
+    double isoChHadCandPhi[kMaxPFChargedCand];
+    double isoNeHadCandPt[kMaxPFNeutralCand];
+    double isoNeHadCandEta[kMaxPFNeutralCand];
+    double isoNeHadCandPhi[kMaxPFNeutralCand];
+    double isoGammaCandPt[kMaxPFNeutralCand];
+    double isoGammaCandEta[kMaxPFNeutralCand];
+    double isoGammaCandPhi[kMaxPFNeutralCand];
 
      // tau id. discriminators
      float decayModeFinding;
