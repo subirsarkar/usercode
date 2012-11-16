@@ -13,7 +13,6 @@ GenMETBlock::GenMETBlock(const edm::ParameterSet& iConfig) :
   _verbosity(iConfig.getParameter<int>("verbosity")),
   _inputTag(iConfig.getParameter<edm::InputTag>("genMETSrc"))
 {
-  std::cout << "==> GenMETBlock::GenMETBlock()" << std::endl;
 }
 void GenMETBlock::beginJob() 
 {

@@ -66,13 +66,6 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   edm::Handle<edm::View<pat::Jet> > jets;
   iEvent.getByLabel(_inputTag, jets);
 
-#if 0
-  edm::Handle<edm::ValueMap<float> > puJetIdMVA;
-  iEvent.getByLabel("puJetMva", "fullDiscriminant", puJetIdMVA);
-
-  edm::Handle<edm::ValueMap<int> > puJetIdFlag;
-  iEvent.getByLabel("puJetMva", "fullId", puJetIdFlag);
-#endif
   if (jets.isValid()) {
     unsigned int njets = jets->size();
     edm::LogInfo("JetBlock") << "Total # PAT Jets: " << njets;

@@ -12,7 +12,6 @@ GenJetBlock::GenJetBlock(const edm::ParameterSet& iConfig) :
   _verbosity(iConfig.getParameter<int>("verbosity")),
   _inputTag(iConfig.getParameter<edm::InputTag>("genJetSrc"))
 {
-  std::cout << "==> GenJetBlock::GenJetBlock()" << std::endl;
 }
 void GenJetBlock::beginJob() {
   // Get TTree pointer
