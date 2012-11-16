@@ -51,8 +51,10 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 import PhysicsTools.PatAlgos.tools.tauTools as tauTools
 import PhysicsTools.PatAlgos.tools.jetTools as jetTools
 import PhysicsTools.PatAlgos.tools.metTools as metTools
+from VHTauTau.PatTools.customizePAT import addSelectedPFlowParticle,addPFMuonIsolation,addPFElectronIsolation
 
 tauTools.switchToPFTauHPS(process) # For HPS Taus
+addSelectedPFlowParticle(process)
 
 ## --
 ## Switch on PAT trigger
@@ -69,5 +71,5 @@ process.p = cms.Path(
 # List File names here
 #---------------------------------------
 process.PoolSource.fileNames = [
-  'file:./skim-mu-v7.root'
+  'file:./skim-v6.root'
 ]
