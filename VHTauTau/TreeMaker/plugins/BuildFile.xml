@@ -1,5 +1,0 @@
-<use   name="VHTauTau/TreeMaker"/>
-
-<library   file="*.cc" name="TreeMakerPlugins">
-  <flags   EDM_PLUGIN="1"/>
-</library>
