@@ -64,7 +64,6 @@ vhtm::Electron::Electron() :
   isoTrk04(-999),
   isoRel03(-999),
   isoRel04(-999),
-  missingHits(-1),
   vx(-999),
   vy(-999),
   vz(-999),
@@ -81,6 +80,7 @@ vhtm::Electron::Electron() :
   chargedHadronIso(-999),
   neutralHadronIso(-999),
   photonIso(-999),
+  missingHits(-1),
   dB(-999),
   edB(-999),
   dB3d(-999),
@@ -252,6 +252,8 @@ vhtm::Tau::Tau():
   }
 }
 vhtm::Muon::Muon() :
+  isTrackerMuon(false),
+  isPFMuon(false),
   eta(-999),
   phi(-999),
   pt(-999),
@@ -279,8 +281,6 @@ vhtm::Muon::Muon() :
   matches(-1),
   trackerLayersWithMeasurement(-1),
   pfRelIso(-999),
-  isTrackerMuon(false),
-  isPFMuon(false),
   vx(-999),
   vy(-999),
   vz(-999),

@@ -402,8 +402,6 @@ namespace vhtm {
        unsigned int stationGapMaskPull;
        int muonID;
      
-       int selbit;
-
        float idMVA;
        float isoRingsMVA;
        float isoRingsRadMVA;
@@ -417,6 +415,8 @@ namespace vhtm {
        float pfRelIso04v2;
        float pfRelIsoDB04v1;
        float pfRelIsoDB04v2;
+
+       int selbit;
 
      ClassDef(Muon, 1)
   };
