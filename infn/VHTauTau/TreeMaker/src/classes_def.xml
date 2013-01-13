@@ -24,7 +24,7 @@
     <version ClassVersion="1" checksum="2014445924" />
   </class>
   <class name="vhtm::Muon" ClassVersion="1">
-    <version ClassVersion="1" checksum="3411762777" />
+    <version ClassVersion="1" checksum="1276554683" />
   </class>
   <class name="vhtm::Jet" ClassVersion="1">
     <version ClassVersion="1" checksum="1658972490"/>
