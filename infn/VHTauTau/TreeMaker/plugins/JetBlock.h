@@ -42,9 +42,6 @@ private:
 
   int _verbosity;
   edm::InputTag _inputTag;
-  std::string _jecUncPath;
-  bool _applyResJEC;
-  std::string _resJEC;
 
   vhtm::Jet* jetB;
 };

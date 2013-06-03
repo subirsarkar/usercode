@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <map>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -21,6 +20,7 @@
 
 #include "VHTauTau/TreeMaker/interface/PhysicsObjects.h"
 
+class TPMERegexp;
 class TClonesArray;
 class TriggerObject;
 
@@ -47,14 +47,16 @@ private:
   int _verbosity;
   const edm::InputTag _hltInputTag;
   edm::InputTag _triggerEventTag;
-  const std::string  _tagPathLabel;
-  const std::string  _probePathLabel;
   const std::vector<std::string> _hltPathsOfInterest;
   bool _may10ReRecoData;
   bool _firingFlag;
+  std::string _hltPattern;
+  double _minTrigObjPt;
 
   vhtm::TriggerObject* _triggerObject;
 
   HLTConfigProvider hltConfig;
+  TPMERegexp* _re;
+  std::vector<std::string> _matchedPathList;
 };
 #endif

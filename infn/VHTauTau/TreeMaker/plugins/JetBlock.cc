@@ -4,9 +4,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
  
@@ -23,10 +20,7 @@ pat::strbitset retpf = pfjetIDLoose.getBitTemplate();
 // Constructor
 JetBlock::JetBlock(const edm::ParameterSet& iConfig) :
   _verbosity(iConfig.getParameter<int>("verbosity")),
-  _inputTag(iConfig.getParameter<edm::InputTag>("jetSrc")),
-  _jecUncPath(iConfig.getParameter<std::string>("jecUncertainty")),
-  _applyResJEC (iConfig.getParameter<bool>     ("applyResidualJEC")),
-  _resJEC (iConfig.getParameter<std::string>   ("residualJEC"))
+  _inputTag(iConfig.getParameter<edm::InputTag>("jetSrc"))
 {}
 void JetBlock::beginJob() 
 {
@@ -41,28 +35,6 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   cloneJet->Clear();
   fnJet = 0;
 
-  JetCorrectionUncertainty *jecUnc = 0;
-  JetCorrectorParameters *ResJetCorPar = 0;
-  FactorizedJetCorrector *JEC = 0;
-  bool applyResJECLocal = _applyResJEC;
-  if (_applyResJEC) {
-    try {
-      edm::FileInPath fipUnc(_jecUncPath);;
-      jecUnc = new JetCorrectionUncertainty(fipUnc.fullPath());
-
-      edm::FileInPath fipRes(_resJEC);
-      ResJetCorPar = new JetCorrectorParameters(fipRes.fullPath());
-      std::vector<JetCorrectorParameters> vParam;
-      vParam.push_back(*ResJetCorPar);
-      JEC = new FactorizedJetCorrector(vParam);
-    }
-    catch (std::exception& ex) {
-      edm::LogInfo("JetBlock") << "The following exception occurred:" 
-                               << std::endl 
-                               << ex.what();
-      applyResJECLocal = false; 
-    } 
-  }
   edm::Handle<edm::View<pat::Jet> > jets;
   iEvent.getByLabel(_inputTag, jets);
 
@@ -81,28 +53,15 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       retpf.set(false);
       int passjetTight = (pfjetIDTight(jet, retpf)) ? 1 : 0;
 
-      double corr = 1.;
-      if (applyResJECLocal && iEvent.isRealData() ) {
-        JEC->setJetEta(jet.eta());
-        JEC->setJetPt(jet.pt()); // here you put the L2L3 Corrected jet pt
-        corr = JEC->getCorrection();
-      }
-
-      if (jecUnc) {
-        jecUnc->setJetEta(jet.eta());
-        jecUnc->setJetPt(jet.pt()*corr); // the uncertainty is a function of the corrected pt
-      }
       jetB = new ((*cloneJet)[fnJet++]) vhtm::Jet();
 
       // fill in all the vectors
       jetB->eta        = jet.eta();
       jetB->phi        = jet.phi();
-      jetB->pt         = jet.pt()*corr;
+      jetB->pt         = jet.pt();
       jetB->pt_raw     = jet.correctedJet("Uncorrected").pt();
-      jetB->energy     = jet.energy()*corr;
+      jetB->energy     = jet.energy();
       jetB->energy_raw = jet.correctedJet("Uncorrected").energy();
-      jetB->jecUnc     = (jecUnc) ? jecUnc->getUncertainty(true) : -1;
-      jetB->resJEC     = corr;
       jetB->partonFlavour = jet.partonFlavour();
 
       // Jet identification in high pile-up environment
@@ -152,9 +111,6 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
     edm::LogError("JetBlock") << "Error >> Failed to get pat::Jet collection for label: " 
                               << _inputTag;
   }
-  if (jecUnc) delete jecUnc;
-  if (ResJetCorPar) delete ResJetCorPar;
-  if (JEC) delete JEC;
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(JetBlock);

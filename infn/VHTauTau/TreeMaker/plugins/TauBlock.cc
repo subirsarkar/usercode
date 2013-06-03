@@ -29,7 +29,9 @@ namespace tb
 TauBlock::TauBlock(const edm::ParameterSet& iConfig) :
   _verbosity(iConfig.getParameter<int>("verbosity")),
   _inputTag(iConfig.getParameter<edm::InputTag>("patTauSrc")),
-  _vtxInputTag(iConfig.getParameter<edm::InputTag>("vertexSrc"))
+  _vtxInputTag(iConfig.getParameter<edm::InputTag>("vertexSrc")),
+  _beamSpotInputTag(iConfig.getParameter<edm::InputTag>("offlineBeamSpot")),
+  _beamSpotCorr(iConfig.getParameter<bool>("beamSpotCorr"))
 {
 }
 TauBlock::~TauBlock() { }
@@ -46,15 +48,19 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   cloneTau->Clear();
   fnTau = 0;
 
-  edm::Handle<reco::VertexCollection> primaryVertices;
-  iEvent.getByLabel(_vtxInputTag, primaryVertices);
-
   edm::Handle<std::vector<pat::Tau> > taus;
   iEvent.getByLabel(_inputTag, taus);
   
   if (taus.isValid()) {
+    edm::Handle<reco::VertexCollection> primaryVertices;
+    iEvent.getByLabel(_vtxInputTag, primaryVertices);
+
+    edm::Handle<reco::BeamSpot> beamSpot;
+    if (_beamSpotCorr) {
+      iEvent.getByLabel(_beamSpotInputTag, beamSpot);
+    }
+
     edm::LogInfo("TauBlock") << "Total # PAT Taus: " << taus->size();
-    
     for (std::vector<pat::Tau>::const_iterator it  = taus->begin(); 
                                                it != taus->end(); ++it) {
       if (fnTau == kMaxTau) {
@@ -76,9 +82,21 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
         tauB->leadTrkEta     = trk->eta();
         tauB->leadTrkPhi     = trk->phi();
         tauB->leadTrkCharge  = trk->charge();
-        tauB->leadTrkD0      = trk->d0();
+
+        double trkd0 = trk->d0();
+        double trkdz = trk->dz();
+        if (_beamSpotCorr) {
+          if (beamSpot.isValid()) {
+            trkd0 = -(trk->dxy(beamSpot->position()));
+            trkdz = trk->dz(beamSpot->position());
+          }
+          else
+            edm::LogError("MuonsBlock") << "Error >> Failed to get BeamSpot for label: "
+                                        << _beamSpotInputTag;
+        }
+        tauB->leadTrkD0      = trkd0;
         tauB->leadTrkD0Error = trk->d0Error();
-        tauB->leadTrkDz      = trk->dz();
+        tauB->leadTrkDz      = trkdz;
         tauB->leadTrkDzError = trk->dzError();
         if (0) std::cout << trk->pt() << " "
                          << trk->eta() << " "
@@ -88,14 +106,20 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
                          << trk->dz() 
                          << std::endl;
 
-        // IP of leadPFChargedHadrCand wrt PV
-        // Vertex association
-        double minVtxDist3D = 9999.;
-        int indexVtx = -1;
-        double vertexDz = 9999.;
-        double vertexDxy = 9999.;
         if (primaryVertices.isValid()) {
           edm::LogInfo("TauBlock") << "Total # Primary Vertices: " << primaryVertices->size();
+
+          // IP of leadPFChargedHadrCand wrt event PV
+          reco::VertexCollection::const_iterator vit = primaryVertices->begin(); // Highest sumPt vertex
+          tauB->dxyPV = trk->dxy(vit->position());
+          tauB->dzPV  = trk->dz(vit->position());
+
+          // IP of leadPFChargedHadrCand wrt closest PV
+          // Vertex association
+          double minVtxDist3D = 9999.;
+          int indexVtx = -1;
+          double vertexDz = 9999.;
+          double vertexDxy = 9999.;
           for (reco::VertexCollection::const_iterator vit  = primaryVertices->begin();
                                                       vit != primaryVertices->end(); ++vit) {
             double dxy = trk->dxy(vit->position());
@@ -108,15 +132,15 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
               vertexDz = dz;
             }
           }
+          tauB->vtxIndex = indexVtx;
+          tauB->vtxDxy   = vertexDxy;
+          tauB->vtxDz    = vertexDz;
+          if (0) std::cout << indexVtx << " " << vertexDxy << " " << vertexDz << std::endl;
 	}
         else {
   	  edm::LogError("TauBlock") << "Error >> Failed to get VertexCollection for label: "
                                     << _vtxInputTag;
         }
-        tauB->vtxIndex = indexVtx;
-        tauB->vtxDxy   = vertexDxy;
-        tauB->vtxDz    = vertexDz;
-        if (0) std::cout << indexVtx << " " << vertexDxy << " " << vertexDz << std::endl;
       }
       // Leading particle pT
       tauB->leadChargedParticlePt = it->leadPFChargedHadrCand().isNonnull() 

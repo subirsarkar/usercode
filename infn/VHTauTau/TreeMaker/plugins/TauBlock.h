@@ -41,6 +41,8 @@ private:
   int _verbosity;
   edm::InputTag _inputTag;
   edm::InputTag _vtxInputTag;
+  edm::InputTag _beamSpotInputTag;
+  bool _beamSpotCorr;
 
   vhtm::Tau* tauB;
 };

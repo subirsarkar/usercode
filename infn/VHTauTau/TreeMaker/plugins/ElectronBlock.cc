@@ -24,8 +24,8 @@
 // Constructor
 ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig) :
   _verbosity(iConfig.getParameter<int>("verbosity")),
+  _beamSpotCorr(iConfig.getParameter<bool>("beamSpotCorr")),
   _bsInputTag(iConfig.getParameter<edm::InputTag>("offlineBeamSpot")),
-  _trkInputTag(iConfig.getParameter<edm::InputTag>("trackSrc")),
   _vtxInputTag(iConfig.getParameter<edm::InputTag>("vertexSrc")),
   _electronInputTag(iConfig.getParameter<edm::InputTag>("electronSrc"))
 {
@@ -46,16 +46,16 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   cloneElectron->Clear();
   fnElectron = 0;
 
-  edm::Handle<reco::BeamSpot> beamSpot;
-  iEvent.getByLabel(_bsInputTag, beamSpot);
-
-  edm::Handle<reco::VertexCollection> primaryVertices;
-  iEvent.getByLabel(_vtxInputTag, primaryVertices);
-
   edm::Handle<std::vector<pat::Electron> > electrons;
   iEvent.getByLabel(_electronInputTag, electrons);
 
   if (electrons.isValid()) {
+    edm::Handle<reco::BeamSpot> beamSpot;
+    if (_beamSpotCorr) iEvent.getByLabel(_bsInputTag, beamSpot);
+
+    edm::Handle<reco::VertexCollection> primaryVertices;
+    iEvent.getByLabel(_vtxInputTag, primaryVertices);
+
     edm::LogInfo("ElectronBlock") << "Total # PAT Electrons: " << electrons->size();
     for (std::vector<pat::Electron>::const_iterator it  = electrons->begin(); 
                                                     it != electrons->end(); ++it) {
@@ -65,8 +65,6 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	break;
       }
       bool hasGsfTrack  = it->gsfTrack().isNonnull() ? true : false;
-      reco::GsfTrackRef tk = it->gsfTrack();
-
       electronB = new ((*cloneElectron)[fnElectron++]) vhtm::Electron();
       electronB->ecalDriven = it->ecalDrivenSeed();
       electronB->eta         = it->eta();
@@ -79,6 +77,8 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electronB->charge      = it->charge();
   
       if (hasGsfTrack) {
+        reco::GsfTrackRef tk = it->gsfTrack();
+
         electronB->trackPt      = tk->pt();
         electronB->trackPtError = tk->ptError();
 
@@ -90,8 +90,51 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
         electronB->nValidHits   = tk->numberOfValidHits(); 
         electronB->missingHits  = tk->trackerExpectedHitsInner().numberOfHits();
 
-        electronB->trkD0        = tk->d0();
+        double trkd0 = tk->d0();
+        double trkdz = tk->dz();
+        if (_beamSpotCorr) {
+          if (beamSpot.isValid()) {
+            trkd0 = -(tk->dxy(beamSpot->position()));
+            trkdz = tk->dz(beamSpot->position());
+          }
+          else
+            edm::LogError("ElectronBlock") << "Error >> Failed to get BeamSpot for label: "
+                                           << _bsInputTag;
+        }
+        electronB->trkD0        = trkd0;
         electronB->trkD0Error   = tk->d0Error();
+        electronB->trkDz        = trkdz;
+        electronB->trkDzError   = tk->dzError();
+
+        if (primaryVertices.isValid()) {
+          reco::VertexCollection::const_iterator vit  = primaryVertices->begin(); // Highest sumPt vertex
+          electronB->dxyPV = tk->dxy(vit->position());
+          electronB->dzPV  = tk->dz(vit->position());
+
+          // Vertex association
+          double minVtxDist3D = 9999.;
+          int indexVtx = -1;
+          double vertexDistZ = 9999.;
+          edm::LogInfo("ElectronBlock") << "Total # Primary Vertices: " << primaryVertices->size();
+          for (reco::VertexCollection::const_iterator vit  = primaryVertices->begin();
+                                                      vit != primaryVertices->end(); ++vit) {
+            double dxy = tk->dxy(vit->position());
+            double dz  = tk->dz(vit->position());
+            double dist3D = std::sqrt(pow(dxy, 2) + pow(dz, 2));
+            if (dist3D < minVtxDist3D) {
+              minVtxDist3D = dist3D;
+              indexVtx = int(std::distance(primaryVertices->begin(), vit));
+              vertexDistZ = dz;
+            }
+          }
+          electronB->vtxDist3D = minVtxDist3D;
+          electronB->vtxIndex  = indexVtx;
+          electronB->vtxDistZ  = vertexDistZ;
+	}
+	else {
+          edm::LogError("ElectronBlock") << "Error >> Failed to get VertexCollection for label: "
+                                         << _vtxInputTag;
+        }
       }
       // ID variables
       electronB->hoe           = it->hcalOverEcal();
@@ -129,35 +172,6 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electronB->dist_vec  = it->userFloat("dist");
       electronB->dCotTheta = it->userFloat("dcot");
       electronB->hasMatchedConv = (it->userInt("antiConv") ? true : false);
-
-      // Vertex association
-      double minVtxDist3D = 9999.;
-      int indexVtx = -1;
-      double vertexDistZ = 9999.;
-      if (hasGsfTrack) {
-        if (primaryVertices.isValid()) {
-	  edm::LogInfo("ElectronBlock") << "Total # Primary Vertices: " << primaryVertices->size();
-          for (reco::VertexCollection::const_iterator vit  = primaryVertices->begin(); 
-                                                      vit != primaryVertices->end(); ++vit) {
-            double dxy = tk->dxy(vit->position());
-            double dz  = tk->dz(vit->position());
-            double dist3D = std::sqrt(pow(dxy, 2) + pow(dz, 2));
-            if (dist3D < minVtxDist3D) {
-              minVtxDist3D = dist3D;
-              indexVtx = int(std::distance(primaryVertices->begin(), vit));
-              vertexDistZ = dz;
-            }
-          }
-        } 
-        else {
-	  edm::LogError("ElectronBlock") << "Error >> Failed to get VertexCollection for label: " 
-                                         << _vtxInputTag;
-        }      
-      }
-      // Vertex association variables
-      electronB->vtxDist3D = minVtxDist3D;
-      electronB->vtxIndex  = indexVtx;
-      electronB->vtxDistZ  = vertexDistZ;
 
       electronB->relIso   = (it->trackIso() + it->ecalIso() + it->hcalIso())/it->pt();
 

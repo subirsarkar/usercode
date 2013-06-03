@@ -45,13 +45,13 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<std::vector<pat::Muon> > muons;
   iEvent.getByLabel(_muonInputTag, muons);
 
-  edm::Handle<reco::VertexCollection> primaryVertices;
-  iEvent.getByLabel(_vtxInputTag, primaryVertices);
-
-  edm::Handle<reco::BeamSpot> beamSpot;
-  iEvent.getByLabel(_beamSpotInputTag, beamSpot);
-
   if (muons.isValid()) {
+    edm::Handle<reco::VertexCollection> primaryVertices;
+    iEvent.getByLabel(_vtxInputTag, primaryVertices);
+
+    edm::Handle<reco::BeamSpot> beamSpot;
+    iEvent.getByLabel(_beamSpotInputTag, beamSpot);
+
     edm::LogInfo("MuonBlock") << "Total # Muons: " << muons->size();
     for (std::vector<pat::Muon>::const_iterator it  = muons->begin(); 
                                                 it != muons->end(); ++it) {
@@ -96,13 +96,17 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muonB->globalChi2 = it->normChi2();
       muonB->passID     = (it->muonID(_muonID)) ? true : false;
 
-      // Vertex association
-      double minVtxDist3D = 9999.;
-         int indexVtx = -1;
-      double vertexDistZ = 9999.;
       if (primaryVertices.isValid()) {
 	edm::LogInfo("MuonBlock") << "Total # Primary Vertices: " << primaryVertices->size();
 
+        reco::VertexCollection::const_iterator vit = primaryVertices->begin(); // Highest sumPt vertex
+        muonB->dxyPV = tk->dxy(vit->position());
+        muonB->dzPV  = tk->dz(vit->position());
+
+        // Vertex association
+        double minVtxDist3D = 9999.;
+           int indexVtx = -1;
+        double vertexDistZ = 9999.;
         for (reco::VertexCollection::const_iterator vit  = primaryVertices->begin(); 
                                                     vit != primaryVertices->end(); ++vit) {
           double dxy = tk->dxy(vit->position());
@@ -114,15 +118,14 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             vertexDistZ  = dz;
           }
         }
+        muonB->vtxDist3D = minVtxDist3D;
+        muonB->vtxIndex  = indexVtx;
+        muonB->vtxDistZ  = vertexDistZ;
       } 
       else {
 	edm::LogError("MuonBlock") << "Error >> Failed to get VertexCollection for label: " 
                                    << _vtxInputTag;
       }
-      muonB->vtxDist3D = minVtxDist3D;
-      muonB->vtxIndex  = indexVtx;
-      muonB->vtxDistZ  = vertexDistZ;
-
       // Hit pattern
       const reco::HitPattern& hitp = gtk->hitPattern();  // innerTrack will not provide Muon Hits 
       muonB->pixHits = hitp.numberOfValidPixelHits();

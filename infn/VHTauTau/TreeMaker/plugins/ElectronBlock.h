@@ -1,4 +1,3 @@
-
 #ifndef __VHTauTau_TreeMaker_ElectronBlock_h
 #define __VHTauTau_TreeMaker_ElectronBlock_h
 
@@ -43,8 +42,9 @@ private:
   int fnElectron;
 
   int _verbosity;
+  bool _beamSpotCorr;
+
   edm::InputTag _bsInputTag;
-  edm::InputTag _trkInputTag;
   edm::InputTag _vtxInputTag;
   edm::InputTag _electronInputTag;
 
