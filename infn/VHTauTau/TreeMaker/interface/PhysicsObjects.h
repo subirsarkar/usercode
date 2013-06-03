@@ -65,8 +65,10 @@ namespace vhtm {
        int pixHits;
        int trkHits;
        int nValidHits;
-     float trkD0;
-     float trkD0Error;
+    double trkD0;
+    double trkD0Error;
+    double trkDz;
+    double trkDzError;
   
     // ID variables
     double hoe;
@@ -103,6 +105,8 @@ namespace vhtm {
     double scRawEnergy;
   
     // Vertex association variables
+    double dxyPV; 
+    double dzPV; 
     double vtxDist3D;
        int vtxIndex;
     double vtxDistZ;
@@ -164,7 +168,7 @@ namespace vhtm {
        int selbit;
        int fidFlag;
 
-    ClassDef(Electron, 1) 
+    ClassDef(Electron, 2) 
   };
   class GenParticle: public TObject {
   public:
@@ -248,6 +252,8 @@ namespace vhtm {
     double leadTrkDz;
     double leadTrkDzError;
 
+    double dxyPV;
+    double dzPV;
        int vtxIndex;
     double vtxDxy;
     double vtxDz;
@@ -345,7 +351,7 @@ namespace vhtm {
   
        int selbit;
   
-    ClassDef(Tau, 1) 
+    ClassDef(Tau, 2) 
   };
   class Muon: public TObject {
   public:
@@ -371,6 +377,8 @@ namespace vhtm {
     double hoIso;
     double relIso;
        int passID;
+    double dxyPV; 
+    double dzPV; 
     double vtxDist3D;
        int vtxIndex;
     double vtxDistZ;
@@ -418,7 +426,7 @@ namespace vhtm {
 
        int selbit;
 
-     ClassDef(Muon, 1)
+     ClassDef(Muon, 2)
   };
   class Jet: public TObject {
   public:

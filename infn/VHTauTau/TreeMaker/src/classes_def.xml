@@ -5,7 +5,8 @@
   <class name="vhtm::GenEvent" ClassVersion="1">
     <version ClassVersion="1" checksum="3121422649" />
   </class>
-  <class name="vhtm::Electron" ClassVersion="1">
+  <class name="vhtm::Electron" ClassVersion="2">
+    <version ClassVersion="2" checksum="2554538485" />
     <version ClassVersion="1" checksum="1488844736" />
   </class>
   <class name="vhtm::GenParticle" ClassVersion="1">
@@ -20,10 +21,12 @@
   <class name="vhtm::MET" ClassVersion="1">
     <version ClassVersion="1" checksum="1036931265" />
   </class>
-  <class name="vhtm::Tau" ClassVersion="1">
+  <class name="vhtm::Tau" ClassVersion="2">
+    <version ClassVersion="2" checksum="4191986825" />
     <version ClassVersion="1" checksum="2014445924" />
   </class>
-  <class name="vhtm::Muon" ClassVersion="1">
+  <class name="vhtm::Muon" ClassVersion="2">
+    <version ClassVersion="2" checksum="3072941820" />
     <version ClassVersion="1" checksum="1276554683" />
   </class>
   <class name="vhtm::Jet" ClassVersion="1">

@@ -22,5 +22,12 @@ triggerObjectBlock = cms.EDAnalyzer("TriggerObjectBlock",
                                     "HLT_Ele3",
                                     "HLT_Ele4",
                                     "IsoPFTau"),
+  hltPattern 
+    = cms.string(r"""
+       HLT_(Mu\\d{1,2}_Ele\\d{1,2}_(?:Calo)? | 
+       Ele[1-4][0-9] | 
+       [^(QuadJet\\d+_)]IsoPFTau)
+  """),
+  minTrigObjPt = cms.double(8.0),
   May10ReRecoData = cms.bool(False)
 )
