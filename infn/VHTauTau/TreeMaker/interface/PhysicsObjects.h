@@ -298,19 +298,47 @@ namespace vhtm {
 
      // tau id. discriminators
      float decayModeFinding;
-     float looseIsolation;
-     float mediumIsolation;
-     float tightIsolation;
-  
+
      // discriminators against electrons/muons
      float againstMuonLoose;
+     float againstMuonMedium;
      float againstMuonTight;
+
+     float againstMuonLoose2;
+     float againstMuonMedium2;
+     float againstMuonTight2;
+
      float againstElectronLoose; 
      float againstElectronMedium; 
      float againstElectronTight; 
-     float pfElectronMVA;
      float againstElectronMVA;
   
+     float againstElectronVLooseMVA2; 
+     float againstElectronLooseMVA2; 
+     float againstElectronMediumMVA2; 
+     float againstElectronTightMVA2; 
+
+     float againstElectronLooseMVA3; 
+     float againstElectronMediumMVA3; 
+     float againstElectronTightMVA3; 
+     float againstElectronVTightMVA3; 
+
+     // Obsolete
+     float pfElectronMVA;
+
+     float byVLooseIsolation;
+     float byLooseIsolation;
+     float byMediumIsolation;
+     float byTightIsolation;
+  
+     float byLooseIsolationMVA;
+     float byMediumIsolationMVA;
+     float byTightIsolationMVA;
+
+     float byLooseIsolationMVA2;
+     float byMediumIsolationMVA2;
+     float byTightIsolationMVA2;
+
      float byVLooseCombinedIsolationDeltaBetaCorr;
      float byLooseCombinedIsolationDeltaBetaCorr;
      float byMediumCombinedIsolationDeltaBetaCorr;
@@ -320,10 +348,9 @@ namespace vhtm {
      float byMediumIsolationDeltaBetaCorr;
      float byTightIsolationDeltaBetaCorr;
   
-     // MVA Isolation
-     float byLooseIsolationMVA;
-     float byMediumIsolationMVA;
-     float byTightIsolationMVA;
+     float byLooseCombinedIsolationDeltaBetaCorr3Hits;
+     float byMediumCombinedIsolationDeltaBetaCorr3Hits;
+     float byTightCombinedIsolationDeltaBetaCorr3Hits;
 
      // kinematic variables for PFJet associated to PFTau
     double jetPt;

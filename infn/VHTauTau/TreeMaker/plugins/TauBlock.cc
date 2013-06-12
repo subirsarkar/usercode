@@ -239,35 +239,64 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
 
       // tau id. discriminators
       tauB->decayModeFinding = it->tauID("decayModeFinding");
-      tauB->looseIsolation   = it->tauID("byLooseIsolation");
-      tauB->mediumIsolation  = it->tauID("byMediumIsolation");
-      tauB->tightIsolation   = it->tauID("byTightIsolation");
 
-      // discriminators against electrons/muons
+      // discriminators against muons
       tauB->againstMuonLoose      = it->tauID("againstMuonLoose");
+      tauB->againstMuonMedium     = it->tauID("againstMuonMedium");
       tauB->againstMuonTight      = it->tauID("againstMuonTight");
+
+      tauB->againstMuonLoose2     = it->tauID("againstMuonLoose2");
+      tauB->againstMuonMedium2    = it->tauID("againstMuonMedium2");
+      tauB->againstMuonTight2     = it->tauID("againstMuonTight2");
+
+      // discriminators against electrons
       tauB->againstElectronLoose  = it->tauID("againstElectronLoose");
       tauB->againstElectronMedium = it->tauID("againstElectronMedium");
       tauB->againstElectronTight  = it->tauID("againstElectronTight");
+      tauB->againstElectronMVA    = it->tauID("againstElectronMVA");
+
+      tauB->againstElectronVLooseMVA2  = it->tauID("againstElectronVLooseMVA2");
+      tauB->againstElectronLooseMVA2   = it->tauID("againstElectronLooseMVA2");
+      tauB->againstElectronMediumMVA2  = it->tauID("againstElectronMediumMVA2");
+      tauB->againstElectronTightMVA2   = it->tauID("againstElectronTightMVA2");
+      
+      tauB->againstElectronLooseMVA3  = it->tauID("againstElectronLooseMVA3");
+      tauB->againstElectronMediumMVA3  = it->tauID("againstElectronMediumMVA3");
+      tauB->againstElectronTightMVA3  = it->tauID("againstElectronTightMVA3");
+      tauB->againstElectronVTightMVA3  = it->tauID("againstElectronVTightMVA3");
+
+      // Obsolete
       tauB->pfElectronMVA         = it->leadPFCand().isNonnull() 
                                   ? it->leadPFCand()->mva_e_pi() : 1.;
 
-      // ElectronIDMVA, electron faking tau
-      tauB->againstElectronMVA    = it->tauID("againstElectronTightMVA2");
-
-      tauB->byVLooseCombinedIsolationDeltaBetaCorr = it->tauID("byVLooseCombinedIsolationDeltaBetaCorr");
-      tauB->byLooseCombinedIsolationDeltaBetaCorr  = it->tauID("byLooseCombinedIsolationDeltaBetaCorr");
-      tauB->byMediumCombinedIsolationDeltaBetaCorr = it->tauID("byMediumCombinedIsolationDeltaBetaCorr");
-      tauB->byTightCombinedIsolationDeltaBetaCorr  = it->tauID("byTightCombinedIsolationDeltaBetaCorr");
-      tauB->byVLooseIsolationDeltaBetaCorr         = it->tauID("byVLooseIsolationDeltaBetaCorr");
-      tauB->byLooseIsolationDeltaBetaCorr          = it->tauID("byLooseIsolationDeltaBetaCorr");
-      tauB->byMediumIsolationDeltaBetaCorr         = it->tauID("byMediumIsolationDeltaBetaCorr");
-      tauB->byTightIsolationDeltaBetaCorr          = it->tauID("byTightIsolationDeltaBetaCorr");
+      tauB->byVLooseIsolation  = it->tauID("byVLooseIsolation");
+      tauB->byLooseIsolation   = it->tauID("byLooseIsolation");
+      tauB->byMediumIsolation  = it->tauID("byMediumIsolation");
+      tauB->byTightIsolation   = it->tauID("byTightIsolation");
 
       // MVA based isolation
       tauB->byLooseIsolationMVA                    = it->tauID("byLooseIsolationMVA"); 
       tauB->byMediumIsolationMVA                   = it->tauID("byMediumIsolationMVA"); 
       tauB->byTightIsolationMVA                    = it->tauID("byTightIsolationMVA"); 
+
+      tauB->byLooseIsolationMVA2                   = it->tauID("byLooseIsolationMVA2"); 
+      tauB->byMediumIsolationMVA2                  = it->tauID("byMediumIsolationMVA2"); 
+      tauB->byTightIsolationMVA2                   = it->tauID("byTightIsolationMVA2"); 
+  
+      // DB Corrected Isolation
+      tauB->byVLooseCombinedIsolationDeltaBetaCorr = it->tauID("byVLooseCombinedIsolationDeltaBetaCorr");
+      tauB->byLooseCombinedIsolationDeltaBetaCorr  = it->tauID("byLooseCombinedIsolationDeltaBetaCorr");
+      tauB->byMediumCombinedIsolationDeltaBetaCorr = it->tauID("byMediumCombinedIsolationDeltaBetaCorr");
+      tauB->byTightCombinedIsolationDeltaBetaCorr  = it->tauID("byTightCombinedIsolationDeltaBetaCorr");
+
+      tauB->byVLooseIsolationDeltaBetaCorr         = it->tauID("byVLooseIsolationDeltaBetaCorr");
+      tauB->byLooseIsolationDeltaBetaCorr          = it->tauID("byLooseIsolationDeltaBetaCorr");
+      tauB->byMediumIsolationDeltaBetaCorr         = it->tauID("byMediumIsolationDeltaBetaCorr");
+      tauB->byTightIsolationDeltaBetaCorr          = it->tauID("byTightIsolationDeltaBetaCorr");
+
+      tauB->byLooseCombinedIsolationDeltaBetaCorr3Hits = it->tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+      tauB->byMediumCombinedIsolationDeltaBetaCorr3Hits = it->tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+      tauB->byTightCombinedIsolationDeltaBetaCorr3Hits = it->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
 
       // kinematic variables for PFJet associated to PFTau
       if (tb::isValidRef(it->pfJetRef())) {
