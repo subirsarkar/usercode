@@ -1,0 +1,54 @@
+<lcgdict>
+  <class name="vhtm::Event" ClassVersion="1">
+    <version ClassVersion="1" checksum="2028250675" />
+  </class>
+  <class name="vhtm::GenEvent" ClassVersion="1">
+    <version ClassVersion="1" checksum="3121422649" />
+  </class>
+  <class name="vhtm::Electron" ClassVersion="1">
+    <version ClassVersion="1" checksum="1270335261" />
+  </class>
+  <class name="vhtm::Tau" ClassVersion="1">
+    <version ClassVersion="1" checksum="1101605653" />
+  </class>
+  <class name="vhtm::Muon" ClassVersion="1">
+    <version ClassVersion="1" checksum="1003097665" />
+  </class>
+  <class name="vhtm::Jet" ClassVersion="1">
+    <version ClassVersion="1" checksum="1431365155"/>
+  </class>
+  <class name="vhtm::MET" ClassVersion="1">
+    <version ClassVersion="1" checksum="1036931265" />
+  </class>
+  <class name="vhtm::Vertex" ClassVersion="1">
+    <version ClassVersion="1" checksum="3500295274" />
+  </class>
+  <class name="vhtm::TriggerObject" ClassVersion="1">
+    <version ClassVersion="1" checksum="420020926" />
+  </class>
+  <class name="vhtm::Candidate" ClassVersion="1">
+    <version ClassVersion="1" checksum="4001486478" />
+  </class>
+  <class name="vhtm::GenParticle" ClassVersion="1">
+    <version ClassVersion="1" checksum="2109007915" />
+  </class>
+  <class name="vhtm::GenJet" ClassVersion="1">
+    <version ClassVersion="1" checksum="1304197886" />
+  </class>
+  <class name="vhtm::GenMET" ClassVersion="1">
+    <version ClassVersion="1" checksum="3208282312" />
+  </class>
+  <class name="std::vector<vhtm::Electron>" persistent="true" />
+  <class name="std::vector<vhtm::Muon>" persistent="true" />
+  <class name="std::vector<vhtm::Jet>" persistent="true" />
+  <class name="std::vector<vhtm::MET>" persistent="true" />
+  <class name="std::vector<vhtm::Tau>" persistent="true" />
+  <class name="std::vector<vhtm::Vertex>" persistent="true" />
+  <class name="std::vector<vhtm::GenParticle>" persistent="true" />
+  <class name="std::vector<vhtm::GenMET>" persistent="true" />
+  <class name="std::vector<vhtm::GenJet>" persistent="true" />
+  <class name="std::vector<vhtm::TriggerObject>" persistent="true" />
+  <class name="std::vector<vhtm::Event>" persistent="true" />
+  <class name="std::vector<vhtm::GenEvent>" persistent="true" />
+  <class name="std::vector<vhtm::Candidate>" persistent="true" />
+</lcgdict>
