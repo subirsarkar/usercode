@@ -1,0 +1,5 @@
+<use name="AnalysisSpace/PattupleMaker" />
+
+<library file="*.cc" name="PattupleMakerPlugins">
+  <flags EDM_PLUGIN="1" />
+</library>
