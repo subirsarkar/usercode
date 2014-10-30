@@ -156,7 +156,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       float iso = absiso/(v.p4().pt());
       muon.pfRelIso03 = iso;
 
-      const reco::MuonPFIsolation& pfIso04 = v.pfIsolationR03();
+      const reco::MuonPFIsolation& pfIso04 = v.pfIsolationR04();
       muon.pfChargedIsoR04 = pfIso04.sumChargedParticlePt;
       muon.sumPUPt04 = pfIso04.sumPUPt;
       absiso = pfIso04.sumChargedParticlePt + std::max(0.0, pfIso04.sumNeutralHadronEt + pfIso04.sumPhotonEt - 0.5 * pfIso04.sumPUPt);
