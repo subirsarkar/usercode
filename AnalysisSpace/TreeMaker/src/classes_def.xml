@@ -38,6 +38,9 @@
   <class name="vhtm::GenMET" ClassVersion="1">
     <version ClassVersion="1" checksum="3208282312" />
   </class>
+  <class name="vhtm::Photon" ClassVersion="1">
+    <version ClassVersion="1" checksum="2620978091" />
+  </class>
   <class name="std::vector<vhtm::Electron>" persistent="true" />
   <class name="std::vector<vhtm::Muon>" persistent="true" />
   <class name="std::vector<vhtm::Jet>" persistent="true" />
@@ -51,4 +54,5 @@
   <class name="std::vector<vhtm::Event>" persistent="true" />
   <class name="std::vector<vhtm::GenEvent>" persistent="true" />
   <class name="std::vector<vhtm::Candidate>" persistent="true" />
+  <class name="std::vector<vhtm::Photon>" persistent="true" />
 </lcgdict>

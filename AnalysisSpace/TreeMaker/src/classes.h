@@ -17,6 +17,7 @@ namespace {
     vhtm::Vertex rvb;
     vhtm::TriggerObject rvd;
     vhtm::Candidate rve;
+    vhtm::Photon rvf;
 
     std::vector<vhtm::Electron> vrv1;
     std::vector<vhtm::GenParticle> vrv2;
@@ -31,5 +32,6 @@ namespace {
     std::vector<vhtm::Event> vrvc;
     std::vector<vhtm::GenEvent> vrvd;
     std::vector<vhtm::Candidate> vrve;
+    std::vector<vhtm::Photon> vrvf;
   };
 }

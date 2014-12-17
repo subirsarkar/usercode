@@ -94,14 +94,14 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.trkD0      = trkd0;
       muon.trkDz      = trkdz;
       muon.globalChi2 = v.normChi2();
-      muon.passID     = (v.muonID(muonID_)) ? true : false;
+      muon.passID     = v.muonID(muonID_) ? true : false;
 
       double dxyWrtPV = -99.;
       double dzWrtPV = -99.;
       if (primaryVertices.isValid()) {
         edm::LogInfo("MuonBlock") << "Total # Primary Vertices: " << primaryVertices->size();
 
-        const reco::Vertex &vit = primaryVertices->front(); // Highest sumPt vertex
+        const reco::Vertex& vit = primaryVertices->front(); // Highest sumPt vertex
         dxyWrtPV = tk->dxy(vit.position());
         dzWrtPV  = tk->dz(vit.position());
         muon.dxyPV = dxyWrtPV;
@@ -117,7 +117,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
           double dist3D = std::sqrt(pow(dxy,2) + pow(dz,2));
           if (dist3D < minVtxDist3D) {
             minVtxDist3D = dist3D;
-            indexVtx = int(std::distance(primaryVertices->begin(), vit));
+            indexVtx = static_cast<int>(std::distance(primaryVertices->begin(), vit));
             vertexDistZ = dz;
           }
         }
