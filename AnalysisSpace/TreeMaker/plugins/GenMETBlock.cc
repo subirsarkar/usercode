@@ -14,6 +14,9 @@ GenMETBlock::GenMETBlock(const edm::ParameterSet& iConfig) :
   genMETToken_(consumes<reco::GenMETCollection>(genMETTag_))
 {
 }
+GenMETBlock::~GenMETBlock() {
+  delete list_;
+}
 void GenMETBlock::beginJob()
 {
   // Get TTree pointer

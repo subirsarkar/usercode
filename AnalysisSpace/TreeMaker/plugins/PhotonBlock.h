@@ -30,6 +30,7 @@ class PhotonBlock : public edm::EDAnalyzer
 
  public:
   explicit PhotonBlock(const edm::ParameterSet& iConfig);
+  virtual ~PhotonBlock();
 
   enum {
     kMaxPhoton = 100

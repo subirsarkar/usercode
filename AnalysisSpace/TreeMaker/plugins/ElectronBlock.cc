@@ -30,6 +30,9 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
   electronToken_(consumes<pat::ElectronCollection>(electronTag_))
 {
 }
+ElectronBlock::~ElectronBlock() {
+  delete list_;
+}
 void ElectronBlock::beginJob()
 {
   // Get TTree pointer

@@ -14,6 +14,9 @@ GenJetBlock::GenJetBlock(const edm::ParameterSet& iConfig) :
   genJetToken_(consumes<reco::GenJetCollection>(genJetTag_))   
 {
 }
+GenJetBlock::~GenJetBlock() {
+  delete list_;
+}
 void GenJetBlock::beginJob() {
   // Get TTree pointer
   TTree* tree = vhtm::Utility::getTree("vhtree");

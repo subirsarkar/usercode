@@ -28,6 +28,7 @@ private:
 
 public:
   explicit JetBlock(const edm::ParameterSet& iConfig);
+  virtual ~JetBlock();
 
   enum {
     kMaxJet_ = 100

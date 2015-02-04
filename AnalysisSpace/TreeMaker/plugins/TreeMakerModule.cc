@@ -32,6 +32,7 @@ void TreeMakerModule::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   tree->Fill();
 }
 void TreeMakerModule::endJob() {
+  edm::LogInfo("TreeMakerModule") << "Done.";
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(TreeMakerModule);

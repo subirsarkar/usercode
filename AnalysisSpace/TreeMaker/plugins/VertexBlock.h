@@ -22,6 +22,7 @@ private:
 
 public:
   explicit VertexBlock(const edm::ParameterSet& iConfig);
+  virtual ~VertexBlock();
 
   enum {
     kMaxVertex_ = 150

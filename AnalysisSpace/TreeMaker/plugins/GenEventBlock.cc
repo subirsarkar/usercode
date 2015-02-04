@@ -21,6 +21,7 @@ GenEventBlock::GenEventBlock(const edm::ParameterSet& iConfig) :
 {
 }
 GenEventBlock::~GenEventBlock() {
+  delete list_;
   delete pdfWeights_;
 }
 void GenEventBlock::beginJob()

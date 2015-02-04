@@ -32,6 +32,9 @@ TauBlock::TauBlock(const edm::ParameterSet& iConfig) :
   bsToken_(consumes<reco::BeamSpot>(bsTag_))
 {
 }
+TauBlock::~TauBlock() {
+  delete list_;
+}
 void TauBlock::beginJob()
 {
   // Get TTree pointer

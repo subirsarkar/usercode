@@ -21,6 +21,7 @@ class MuonBlock : public edm::EDAnalyzer
 
  public:
   explicit MuonBlock(const edm::ParameterSet& iConfig);
+  virtual ~MuonBlock();
 
   enum {
     kMaxMuon_ = 100

@@ -26,6 +26,8 @@ class TauBlock : public edm::EDAnalyzer
 
  public:
   explicit TauBlock(const edm::ParameterSet& iConfig);
+  virtual ~TauBlock();
+
   static const reco::PFJetRef& getJetRef(const reco::PFTau& tau);
 
   enum {

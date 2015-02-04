@@ -25,6 +25,7 @@ private:
 
 public:
   explicit GenMETBlock(const edm::ParameterSet& iConfig);
+  virtual ~GenMETBlock();
 
   enum {
     kMaxGenMET_ = 5

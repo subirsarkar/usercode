@@ -17,6 +17,9 @@ GenParticleBlock::GenParticleBlock(const edm::ParameterSet& iConfig) :
   genParticleToken_(consumes<reco::GenParticleCollection>(genParticleTag_))
 {
 }
+GenParticleBlock::~GenParticleBlock() {
+  delete list_;
+}
 void GenParticleBlock::beginJob() {
   // Get TTree pointer
   TTree* tree = vhtm::Utility::getTree("vhtree");

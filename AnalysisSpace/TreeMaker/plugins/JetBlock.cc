@@ -21,6 +21,9 @@ JetBlock::JetBlock(const edm::ParameterSet& iConfig) :
   jetTag_(iConfig.getUntrackedParameter<edm::InputTag>("jetSrc",  edm::InputTag("selectedPatJets"))),
   jetToken_(consumes<pat::JetCollection>(jetTag_))
 {}
+JetBlock::~JetBlock() {
+  delete list_;
+}
 void JetBlock::beginJob()
 {
   std::string tree_name = "vhtree";

@@ -10,12 +10,19 @@
 METBlock::METBlock(const edm::ParameterSet& iConfig) :
   verbosity_(iConfig.getUntrackedParameter<int>("verbosity", 0)),
   pfMETTag_(iConfig.getUntrackedParameter<edm::InputTag>("metSrc", edm::InputTag("patMETs"))),
+#if 0
   corrMETTag_(iConfig.getUntrackedParameter<edm::InputTag>("corrmetSrc", edm::InputTag("patMETsTypeIcorrected"))),
   mvaMETTag_(iConfig.getUntrackedParameter<edm::InputTag>("mvametSrc", edm::InputTag("patPFMetByMVA"))),
-  pfMETToken_(consumes<pat::METCollection>(pfMETTag_)),
-  corrMETToken_(consumes<pat::METCollection>(corrMETTag_)),
+#endif
+  pfMETToken_(consumes<pat::METCollection>(pfMETTag_))
+#if 0
+  , corrMETToken_(consumes<pat::METCollection>(corrMETTag_)),
   mvaMETToken_(consumes<pat::METCollection>(mvaMETTag_))
+#endif
 {
+}
+METBlock::~METBlock() {
+  delete pfList_;
 }
 void METBlock::beginJob()
 {

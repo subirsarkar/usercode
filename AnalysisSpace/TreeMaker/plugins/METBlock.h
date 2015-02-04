@@ -22,6 +22,7 @@ private:
 
 public:
   explicit METBlock(const edm::ParameterSet& iConfig);
+  virtual ~METBlock();
 
   enum {
     kMaxMET_ = 5
@@ -37,20 +38,23 @@ public:
 private:
   std::vector<vhtm::MET>* pfList_;
   int fnPFMET_;
-
+#if 0
   std::vector<vhtm::MET>* corrList_;
   int fnCorrMET_;
 
   std::vector<vhtm::MET>* mvaList_;
   int fnMVAMET_;
-
+#endif
   const int verbosity_;
   const edm::InputTag pfMETTag_;
+#if 0
   const edm::InputTag corrMETTag_;
   const edm::InputTag mvaMETTag_;
-
+#endif
   const edm::EDGetTokenT<pat::METCollection> pfMETToken_;
+#if 0
   const edm::EDGetTokenT<pat::METCollection> corrMETToken_;
   const edm::EDGetTokenT<pat::METCollection> mvaMETToken_;
+#endif
 };
 #endif

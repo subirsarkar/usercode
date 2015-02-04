@@ -23,6 +23,8 @@ private:
 
 public:
   explicit GenParticleBlock(const edm::ParameterSet& iConfig);
+  virtual ~GenParticleBlock();
+
   enum {
     kMaxGenParticle_ = 2500
   };

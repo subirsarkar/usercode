@@ -22,6 +22,7 @@ private:
 
 public:
   explicit GenJetBlock(const edm::ParameterSet& iConfig);
+  virtual ~GenJetBlock();
 
   enum {
     kMaxGenJet = 100

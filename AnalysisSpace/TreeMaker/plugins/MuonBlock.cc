@@ -33,6 +33,9 @@ MuonBlock::MuonBlock(const edm::ParameterSet& iConfig):
   bsToken_(consumes<reco::BeamSpot>(bsTag_))
 {
 }
+MuonBlock::~MuonBlock() {
+  delete list_;
+}
 void MuonBlock::beginJob()
 {
   // Get TTree pointer

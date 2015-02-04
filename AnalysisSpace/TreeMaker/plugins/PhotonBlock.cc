@@ -23,6 +23,9 @@ PhotonBlock::PhotonBlock(const edm::ParameterSet& iConfig) :
   photonTag_(iConfig.getParameter<edm::InputTag>("photonSrc")),
   photonToken_(consumes<pat::PhotonCollection>(photonTag_))
 {}
+PhotonBlock::~PhotonBlock() {
+  delete list_;
+}
 void PhotonBlock::beginJob() 
 {
   // Get TTree pointer
