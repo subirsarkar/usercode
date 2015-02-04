@@ -32,7 +32,6 @@ private:
 
 public:
   explicit ElectronBlock(const edm::ParameterSet& iConfig);
-  virtual ~ElectronBlock();
 
   enum {
     kMaxElectron_ = 100
