@@ -110,6 +110,7 @@ namespace vhtm {
     double vtxDistZ;
     float relIso;
     float pfRelIso;
+
     // PFlow isolation variable
     float chargedHadronIso;
     float neutralHadronIso;
@@ -120,7 +121,13 @@ namespace vhtm {
 
     int missingHits;
 
+    // IP against PV
     double dB;
+    double edB;
+    double dB3D;
+    double edB3D;
+
+    // Bremsstrahlung
     int nBrems;
     float fbrem;
   
@@ -313,6 +320,9 @@ namespace vhtm {
     double vz;
 
     double dB; // PV2D
+    double edB; 
+    double dB3D;
+    double edB3D;
   
     // UW Recommendation
     bool isGlobalMuonPromptTight;
@@ -392,12 +402,10 @@ namespace vhtm {
     double rho;
     double chi2;
     double ndf;
-    //int ntracks;
-    //int ntracksw05;
+    int ntracks;
     bool isfake;
     bool isvalid;
-    //double sumPt; // vector sum
-  
+
     int selbit;
 
     ClassDef(Vertex, 1)

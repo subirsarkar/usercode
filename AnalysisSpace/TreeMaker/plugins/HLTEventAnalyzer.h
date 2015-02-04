@@ -11,10 +11,10 @@
 class HLTEventAnalyzer : public edm::EDAnalyzer {
 public:
   explicit HLTEventAnalyzer(const edm::ParameterSet&);
-  ~HLTEventAnalyzer();
+  virtual ~HLTEventAnalyzer();
  
-  virtual void beginRun(edm::Run const &, edm::EventSetup const&);
-  virtual void analyze(const edm::Event&, const edm::EventSetup&);
+  virtual void beginRun(edm::Run const &, edm::EventSetup const&) override;
+  virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void analyzeTrigger(const edm::Event&, const edm::EventSetup&, const std::string& triggerName);
  
 private:

@@ -4,6 +4,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 
 #include "TTree.h"
 
@@ -15,7 +16,7 @@ EventBlock::EventBlock(const edm::ParameterSet& iConfig):
   verbosity_(iConfig.getUntrackedParameter<int>("verbosity", 0)),
   l1Tag_(iConfig.getUntrackedParameter<edm::InputTag>("l1Tag", edm::InputTag("gtDigis"))),
   vertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("vertexTag", edm::InputTag("goodOfflinePrimaryVertices"))),
-  //trackTag_(iConfig.getUntrackedParameter<edm::InputTag>("trkTag", edm::InputTag("generalTracks"))),
+  pfTag_(iConfig.getUntrackedParameter<edm::InputTag>("pfTag", edm::InputTag("pfCands"))),
   selectedVertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("selectedVtxTag", edm::InputTag("selectedPrimaryVertices"))),
   puSummaryTag_(iConfig.getUntrackedParameter<edm::InputTag>("puSummaryTag", edm::InputTag("addPileupInfo"))),
   rhoTag_(iConfig.getUntrackedParameter<edm::InputTag>("rhoTag", edm::InputTag("kt6PFJets","rho"))),
@@ -27,7 +28,7 @@ EventBlock::EventBlock(const edm::ParameterSet& iConfig):
   hpTrackThreshold_(iConfig.getUntrackedParameter<double>("hpTrackThreshold", 0.25)),
   l1Token_(consumes<L1GlobalTriggerReadoutRecord>(l1Tag_)),
   vertexToken_(consumes<reco::VertexCollection>(vertexTag_)),
-  //trackToken_(consumes<reco::TrackCollection>(trackTag_)),
+  pfToken_(consumes<pat::PackedCandidateCollection>(pfTag_)),
   selectedVertexToken_(consumes<reco::VertexCollection>(selectedVertexTag_)),
   puSummaryToken_(consumes<std::vector<PileupSummaryInfo> >(puSummaryTag_)),
   rhoToken_(consumes<double>(rhoTag_)),
@@ -131,6 +132,24 @@ void EventBlock::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup
   else {
     edm::LogError("EventBlock") << "Error! Failed to get VertexCollection for label: "
                                 << vertexTag_;
+  }
+  edm::Handle<pat::PackedCandidateCollection> pfs;
+  found = iEvent.getByToken(pfToken_, pfs);
+
+  if (found && pfs.isValid()) {
+    // now loop on pf candidates
+    double sumPtPV = 0;
+    int ntrk = 0, ntrkPV = 0;
+    for (unsigned int i = 0; i < pfs->size(); ++i) {
+      const pat::PackedCandidate& pf = (*pfs)[i];
+      if (pf.charge() != 0) {
+	++ntrk;
+	if (pf.fromPV() == pat::PackedCandidate::PVAssoc::PVUsedInFit) {
+	  ++ntrkPV;
+	  sumPtPV += pf.pt();
+	} 
+      }
+    }
   }
 #if 0
   // Scraping Events Part

@@ -16,10 +16,8 @@ namespace {
 class GenEventBlock : public edm::EDAnalyzer
 {
 private:
-  virtual void beginJob();
-  virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
-  virtual void analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup);
-  virtual void endJob() {}
+  virtual void beginJob() override;
+  virtual void analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup) override;
 
 public:
   explicit GenEventBlock(const edm::ParameterSet& iConfig);

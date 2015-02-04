@@ -27,10 +27,8 @@ namespace vhtm {
 class ElectronBlock : public edm::EDAnalyzer
 {
 private:
-  virtual void beginJob();
-  virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
-  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup);
-  virtual void endJob() {}
+  virtual void beginJob() override;
+  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
 
 public:
   explicit ElectronBlock(const edm::ParameterSet& iConfig);

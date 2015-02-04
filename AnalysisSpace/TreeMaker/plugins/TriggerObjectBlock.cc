@@ -25,9 +25,8 @@ TriggerObjectBlock::TriggerObjectBlock(const edm::ParameterSet& iConfig) :
   hltToken_(consumes<edm::TriggerResults>(hltTag_)),
   objectToken_(consumes<pat::TriggerObjectStandAloneCollection>(objectTag_))
 {
-  std::cout << "hltPattern = " << std::endl
-            << hltPattern_
-            << std::endl;
+  edm::LogInfo("TriggerObjectBlock") << "hltPattern = \n"
+				     << hltPattern_;
   re_ = new TPMERegexp(hltPattern_, "xo");
 }
 TriggerObjectBlock::~TriggerObjectBlock() {
@@ -47,8 +46,8 @@ void TriggerObjectBlock::analyze(const edm::Event& iEvent, const edm::EventSetup
   fnTriggerObject_ = 0;
 
   if (verbosity_) {
-    std::cout << setiosflags(std::ios::fixed);
-    std::cout << "Indx Eta Phi Pt Energy =Trigger path list=" << std::endl;
+    edm::LogInfo("TriggerObjectBlock") << setiosflags(std::ios::fixed);
+    edm::LogInfo("TriggerObjectBlock") << "Indx Eta Phi Pt Energy =Trigger path list=";
   }
  
   edm::Handle<edm::TriggerResults> triggerBits;
@@ -89,15 +88,14 @@ void TriggerObjectBlock::analyze(const edm::Event& iEvent, const edm::EventSetup
 	_tobj.pathList = pathInfoMap;
 	
 	if (verbosity_) {
-	  std::cout << std::setprecision(2);
-	  std::cout << std::setw(4) << fnTriggerObject_++
-		    << std::setw(8) << _tobj.eta
-		    << std::setw(8) << _tobj.phi
-		    << std::setw(8) << _tobj.pt
-		    << std::setw(8) << _tobj.energy
-		    << std::endl;
+	  edm::LogInfo("TriggerObjectBlock") << std::setprecision(2);
+	  edm::LogInfo("TriggerObjectBlock") << std::setw(4) << fnTriggerObject_++
+					     << std::setw(8) << _tobj.eta
+					     << std::setw(8) << _tobj.phi
+					     << std::setw(8) << _tobj.pt
+					     << std::setw(8) << _tobj.energy;
 	  for (auto jt: _tobj.pathList)
-	    std::cout << "\t\t\t\t\t" << jt.first << " " << jt.second << std::endl;
+	    edm::LogInfo("TriggerObjectBlock") << "\t\t\t\t\t" << jt.first << " " << jt.second;;
 	}
 	list_->push_back(_tobj);
       }

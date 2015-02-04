@@ -33,8 +33,6 @@ MuonBlock::MuonBlock(const edm::ParameterSet& iConfig):
   bsToken_(consumes<reco::BeamSpot>(bsTag_))
 {
 }
-MuonBlock::~MuonBlock() {
-}
 void MuonBlock::beginJob()
 {
   // Get TTree pointer
@@ -165,6 +163,10 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       // IP information
       muon.dB = v.dB(pat::Muon::PV2D);
+      muon.edB = v.edB(pat::Muon::PV2D);
+
+      muon.dB3D = v.dB(pat::Muon::PV3D);
+      muon.edB3D = v.edB(pat::Muon::PV3D);
 
       // UW recommendation
       muon.isGlobalMuonPromptTight = muon::isGoodMuon(v, muon::GlobalMuonPromptTight);

@@ -32,7 +32,6 @@ TauBlock::TauBlock(const edm::ParameterSet& iConfig) :
   bsToken_(consumes<reco::BeamSpot>(bsTag_))
 {
 }
-TauBlock::~TauBlock() {}
 void TauBlock::beginJob()
 {
   // Get TTree pointer
@@ -203,9 +202,9 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       tau.puCorrPtSum     = v.tauID("puCorrPtSum");
 #if 0
       // who wants to store all the tauIDs?
-      std::cout << ">>> tauID(label) = value" << std::endl;
+      edm::LogInfo("TauBlock") << ">>> tauID(label) = value";
       for (const pat::Tau::IdPair& pa: v.tauIDs())
-	std::cout << pa.first << "=" << pa.second << std::endl;
+	edm::LogInfo("TauBlock") << pa.first << "=" << pa.second;
 #endif
       // kinematic variables for PFJet associated to PFTau
       tau.jetPt  = v.pfEssential().p4Jet_.Pt();

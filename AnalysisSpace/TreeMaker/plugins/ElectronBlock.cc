@@ -90,7 +90,7 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
         electron.nValidHits  = tk->numberOfValidHits();
         nMissingHits = tk->trackerExpectedHitsInner().numberOfHits();
-        electron.missingHits = nMissingHits;
+        //electron.missingHits = hitp.numberOfHits(reco::HitPattern::MISSING_INNER_HITS);//nMissingHits;
 
         double trkd0 = tk->d0();
         double trkdz = tk->dz();
@@ -174,7 +174,10 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electron.photonIso        = v.photonIso();
   
       // IP information
-      electron.dB  = v.dB(pat::Electron::PV2D);
+      electron.dB    = v.dB(pat::Electron::PV2D);
+      electron.edB   = v.edB(pat::Electron::PV2D);
+      electron.dB3D  = v.dB(pat::Electron::PV3D);
+      electron.edB3D = v.edB(pat::Electron::PV3D);
 
       // Bremstrahlung information
       electron.nBrems = v.numberOfBrems();
@@ -247,11 +250,11 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electron.vz = vertex.z();
 
 #if 0
-      std::cout << "electronID(\"eidLoose\")=" << v.electronID("eidLoose") << std::endl;
-      std::cout << "electronID(\"eidTight\")=" << v.electronID("eidTight") << std::endl;
-      std::cout << "electronID(\"eidRobustLoose\")=" << v.electronID("eidRobustLoose") << std::endl;
-      std::cout << "electronID(\"eidRobustRight\")=" << v.electronID("eidRobustTight") << std::endl;
-      std::cout << "electronID(\"eidRobustHighEnergy\")=" << v.electronID("eidRobustHighEnergy") << std::endl;
+      edm::LogInfo("ElectronBlock") << "electronID(\"eidLoose\")=" << v.electronID("eidLoose") << "\n"
+				    << "electronID(\"eidTight\")=" << v.electronID("eidTight") << "\n"
+				    << "electronID(\"eidRobustLoose\")=" << v.electronID("eidRobustLoose") << "\n"
+				    << "electronID(\"eidRobustRight\")=" << v.electronID("eidRobustTight") << "\n"
+				    << "electronID(\"eidRobustHighEnergy\")=" << v.electronID("eidRobustHighEnergy");
 #endif
 
       for (const pat::Electron::IdPair& pa: v.electronIDs())

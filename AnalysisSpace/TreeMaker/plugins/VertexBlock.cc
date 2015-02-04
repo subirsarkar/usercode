@@ -36,9 +36,8 @@ void VertexBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                                 << primaryVertices->size();
 
     if (verbosity_) {
-      std::cout << std::setprecision(2);
-      std::cout << "   indx      x      y      z    rho     chi2      ndf" << std::endl;
-      //      std::cout << "   indx      x      y      z    rho     chi2      ndf ntracks  sumPt" << std::endl;
+      edm::LogInfo("VertexBlock") << std::setprecision(2); 
+      edm::LogInfo("VertexBlock") << "   indx      x      y      z    rho     chi2      ndf ntracks" << std::endl;
     }
     for (const reco::Vertex& v: *primaryVertices) {
       if (list_->size() == kMaxVertex_) {
@@ -56,23 +55,22 @@ void VertexBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       vertex.rho        = v.position().rho();
       vertex.chi2       = v.chi2();
       vertex.ndf        = v.ndof();
+      vertex.ntracks    = (v.ndof() + 3)/2;
       //vertex.ntracks    = static_cast<int>(v.tracksSize());
       //vertex.ntracksw05 = v.nTracks(0.5); // number of tracks in the vertex with weight above 0.5
+      //vertex.sumPt      = v.p4().pt();
       vertex.isfake     = v.isFake();
       vertex.isvalid    = v.isValid();
-      //vertex.sumPt      = v.p4().pt();
 
       if (verbosity_)
-	std::cout << std::setw(7) << list_->size()
-                  << std::setw(7) << vertex.x 
-                  << std::setw(7) << vertex.y 
-                  << std::setw(7) << vertex.y
-                  << std::setw(7) << vertex.rho
-		  << std::setw(9) << vertex.chi2
-		  << std::setw(9) << vertex.ndf
-	  //<< std::setw(7) << vertex.ntracks
-	  //	  << std::setw(7) << vertex.sumPt
-                  << std::endl;
+	edm::LogInfo("VertexBlock") << std::setw(7) << list_->size()
+				    << std::setw(7) << vertex.x 
+				    << std::setw(7) << vertex.y 
+				    << std::setw(7) << vertex.y
+				    << std::setw(7) << vertex.rho
+				    << std::setw(9) << vertex.chi2
+				    << std::setw(9) << vertex.ndf
+				    << std::setw(7) << vertex.ntracks;
       list_->push_back(vertex);
     }
     fnVertex_ = list_->size();

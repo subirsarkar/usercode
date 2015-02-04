@@ -17,8 +17,6 @@ GenParticleBlock::GenParticleBlock(const edm::ParameterSet& iConfig) :
   genParticleToken_(consumes<reco::GenParticleCollection>(genParticleTag_))
 {
 }
-GenParticleBlock::~GenParticleBlock() {
-}
 void GenParticleBlock::beginJob() {
   // Get TTree pointer
   TTree* tree = vhtm::Utility::getTree("vhtree");
@@ -37,9 +35,9 @@ void GenParticleBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if (found && genParticles.isValid()) {
       edm::LogInfo("GenParticleBlock") << "Total # GenParticles: " << genParticles->size();
       if (verbosity_ > 0) {
-	std::cout << std::setprecision(2);
-        std::cout << "indx    status    pdgId  charge     eta      phi      pt     energy             mID                             dID"
-		  << std::endl;
+	edm::LogInfo("GenParticleBlock") << std::setprecision(2);
+        edm::LogInfo("GenParticleBlock") << "indx    status    pdgId  charge     eta      phi      pt     energy             mID                             dID"
+					 << std::endl;
       }
       //      for (const reco:;GenParticle& v:auto it = genParticles->begin(); it != genParticles->end(); ++it) {
       for (const reco::GenParticle& v: *genParticles) {
@@ -117,17 +115,16 @@ void GenParticleBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& 
           string ds = dID.str();
 	  if (!ds.length()) ds = " -";
 
-	  std::cout << setw(4)  << fnGenParticle_++
-		    << setw(8)  << v.status()
-		    << setw(10) << v.pdgId()
-                    << setw(8)  << v.charge()
-		    << setw(10) << v.eta()
-		    << setw(9)  << v.phi()
-		    << setw(9)  << v.pt()
-		    << setw(9)  << v.energy()
-		    << setw(16) << ms 
-		    << ds
-		    << std::endl;
+	  edm::LogInfo("GenParticleBlock") << setw(4)  << fnGenParticle_++
+					   << setw(8)  << v.status()
+					   << setw(10) << v.pdgId()
+					   << setw(8)  << v.charge()
+					   << setw(10) << v.eta()
+					   << setw(9)  << v.phi()
+					   << setw(9)  << v.pt()
+					   << setw(9)  << v.energy()
+					   << setw(16) << ms 
+					   << ds;
         }
         // add particle to the list
         list_->push_back(gp);

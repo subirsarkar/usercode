@@ -21,15 +21,11 @@ namespace vhtm {
 class TauBlock : public edm::EDAnalyzer
 {
  private:
-  virtual void beginJob();
-  virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
-  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup);
-  virtual void endJob() {}
+  virtual void beginJob() override;
+  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
 
  public:
   explicit TauBlock(const edm::ParameterSet& iConfig);
-  virtual ~TauBlock();
-
   static const reco::PFJetRef& getJetRef(const reco::PFTau& tau);
 
   enum {

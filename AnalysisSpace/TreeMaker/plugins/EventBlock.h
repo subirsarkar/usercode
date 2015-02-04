@@ -19,10 +19,8 @@ namespace vhtm {
 class EventBlock : public edm::EDAnalyzer
 {
 private:
-  virtual void beginJob();
-  virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
-  virtual void analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup);
-  virtual void endJob(){}
+  virtual void beginJob() override;
+  virtual void analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup) override;
 
 public:
   explicit EventBlock(const edm::ParameterSet& iConfig);
@@ -37,7 +35,7 @@ private:
   const int verbosity_;
   const edm::InputTag l1Tag_;
   const edm::InputTag vertexTag_;
-  const edm::InputTag trackTag_;
+  const edm::InputTag pfTag_;
   const edm::InputTag selectedVertexTag_;
   const edm::InputTag puSummaryTag_;
   const edm::InputTag rhoTag_;
@@ -51,7 +49,7 @@ private:
 
   const edm::EDGetTokenT<L1GlobalTriggerReadoutRecord> l1Token_;
   const edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
-  const edm::EDGetTokenT<reco::TrackCollection> trackToken_;
+  const edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
   const edm::EDGetTokenT<reco::VertexCollection> selectedVertexToken_;
   const edm::EDGetTokenT<std::vector<PileupSummaryInfo> > puSummaryToken_;
   const edm::EDGetTokenT<double> rhoToken_;

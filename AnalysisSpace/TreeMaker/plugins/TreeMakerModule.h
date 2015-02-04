@@ -10,14 +10,12 @@
 class TreeMakerModule : public edm::EDAnalyzer
 {
 private:
-  virtual void beginJob();
-  virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
-  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup);
-  virtual void endJob();
+  virtual void beginJob() override;
+  virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
+  virtual void endJob() override;
 
 public:
   explicit TreeMakerModule(const edm::ParameterSet& iConfig);
-  virtual ~TreeMakerModule() {}
 
 private:
   const int verbosity_;
