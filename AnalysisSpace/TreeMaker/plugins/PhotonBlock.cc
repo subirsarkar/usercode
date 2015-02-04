@@ -98,6 +98,7 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.chargedHadIso      = v.chargedHadronIso();
       photon.neutralHadIso      = v.neutralHadronIso();
       photon.photonIso          = v.photonIso();
+      photon.puChargedHadIso    = v.puChargedHadronIso();
 
       int fidFlag = 0;
       if (v.isEB())        fidFlag |= (1 << 0);
@@ -126,6 +127,9 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.r1x5               = v.r1x5();
       photon.r2x5               = v.r2x5();
       photon.maxEnergyXtal      = v.maxEnergyXtal();
+
+      for (const pat::Photon::IdPair& pa: v.photonIDs())
+	photon.idmap[pa.first] = pa.second;
 
       photon.hasConversionTracks = v.hasConversionTracks();      
       if (v.hasConversionTracks()) {

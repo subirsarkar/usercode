@@ -488,6 +488,7 @@ namespace vhtm {
     double chargedHadIso;
     double neutralHadIso;
     double photonIso;
+    double puChargedHadIso;
     
     double r9;
     double hoe;
@@ -500,6 +501,7 @@ namespace vhtm {
     double r1x5;
     double r2x5;
     double maxEnergyXtal;
+    std::map<std::string, float> idmap;
     
     bool hasConversionTracks;
     int nTracks;

@@ -359,6 +359,7 @@ vhtm::Photon::Photon():
   chargedHadIso(-999),
   neutralHadIso(-999),
   photonIso(-999),
+  puChargedHadIso(-999),
   r9(-999),
   hoe(-999),
   sigmaEtaEta(-999),
@@ -387,4 +388,7 @@ vhtm::Photon::Photon():
   dPhiTracksAtVtx(-999),
   dPhiTracksAtEcal(-999),
   dEtaTracksAtEcal(-999),
-  selbit(0) {}
+  selbit(0) 
+{
+  idmap.clear();
+}
