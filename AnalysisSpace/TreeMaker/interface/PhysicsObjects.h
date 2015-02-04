@@ -193,6 +193,8 @@ namespace vhtm {
     double metuncorr;
     double metphiuncorr;
     double sumetuncorr;
+    double metJESUp;
+    double metJESDn;
   
     ClassDef(MET,1)
   };
@@ -372,13 +374,9 @@ namespace vhtm {
     int photonMultiplicity;
     int nConstituents;
 
-    //float simpleSecondaryVertexHighEffBTag;
-    //float simpleSecondaryVertexHighPurBTag;
-
-    float combinedSecondaryVertexBTag;
-    //double combinedSecondaryVertexMVABTag;
+    float combinedInclusiveSecondaryVertexV2BJetTags;
     float combinedInclusiveSecondaryVertexBTag;
-    //double combinedMVABTag;
+
     std::map<std::string, float> discrimap;
 
     int passLooseID;

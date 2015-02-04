@@ -135,7 +135,9 @@ vhtm::MET::MET():
   sumet(-999),
   metuncorr(-999),
   metphiuncorr(-999),
-  sumetuncorr(-999)
+  sumetuncorr(-999),
+  metJESUp(-999),
+  metJESDn(-999)
 {}
 
 vhtm::GenMET::GenMET():
@@ -278,12 +280,8 @@ vhtm::Jet::Jet():
   neutralMultiplicity(-1),
   photonMultiplicity(-1),
   nConstituents(-1),
-  //simpleSecondaryVertexHighEffBTag(-999),
-  //simpleSecondaryVertexHighPurBTag(-999),
-  combinedSecondaryVertexBTag(-999),
-  //combinedSecondaryVertexMVABTag(-999),
+  combinedInclusiveSecondaryVertexV2BJetTags(-999),
   combinedInclusiveSecondaryVertexBTag(-999),
-  //combinedMVABTag(-999),
   passLooseID(-1),
   passTightID(-1),
   selbit(0) 
@@ -301,11 +299,9 @@ vhtm::Vertex::Vertex():
   rho(-999),
   chi2(-999),
   ndf(-1),
-  //ntracks(-1),
-  //ntracksw05(-1),
+  ntracks(-1),
   isfake(true),
   isvalid(false),
-  //sumPt(-999),
   selbit(0) {}
 
 vhtm::TriggerObject::TriggerObject():

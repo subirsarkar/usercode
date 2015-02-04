@@ -140,8 +140,7 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
           photon.nTracks = obj.nTracks();
           photon.isConverted = obj.isConverted();
           photon.pairInvMass = obj.pairInvariantMass();
-          photon.pairCotThetaSeparation
-     	        = obj.pairCotThetaSeparation();
+          photon.pairCotThetaSeparation = obj.pairCotThetaSeparation();
 
 	  math::XYZVectorF  mom = obj.pairMomentum();
           photon.pairPx = mom.x();

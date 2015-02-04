@@ -78,6 +78,8 @@ void METBlock::fillMET(const edm::Event& iEvent,
       mobj.metuncorr    = v.uncorrectedPt(pat::MET::uncorrALL);
       mobj.metphiuncorr = v.uncorrectedPhi(pat::MET::uncorrALL);
       mobj.sumetuncorr  = v.sumEt() - v.corSumEt(pat::MET::uncorrALL);
+      mobj.metJESUp     = v.shiftedPt(pat::MET::JetEnUp);
+      mobj.metJESDn     = v.shiftedPt(pat::MET::JetEnDown);
 
       list->push_back(mobj);
     }
