@@ -353,6 +353,7 @@ vhtm::Photon::Photon():
   isEBEEGap(false),
   fidFlag(0),
   hasPixelSeed(false),
+  passElectronVeto(false),
   ecalIso(-9999),
   hcalIso(-999),
   trackIso(-999),

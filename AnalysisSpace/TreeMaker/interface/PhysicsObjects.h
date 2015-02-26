@@ -482,6 +482,8 @@ namespace vhtm {
     int fidFlag;
     
     bool hasPixelSeed;
+    bool passElectronVeto;
+
     double ecalIso;
     double hcalIso;
     double trackIso;

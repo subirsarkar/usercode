@@ -53,6 +53,21 @@ void TriggerBlock::beginJob()
   hltprescales_ = new std::vector<int>();
   tree->Branch("hltprescales", "vector<int>", &hltprescales_);
 }
+void TriggerBlock::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
+  bool changed = true;
+  if (hltConfig_.init(iRun, iSetup, hltTag_.process(), changed)) {
+    // if init returns TRUE, initialisation has succeeded!
+    edm::LogInfo("TriggerBlock") << "HLT config with process name "
+				 << hltTag_.process() << " successfully extracted";
+  }
+  else {
+    // if init returns FALSE, initialisation has NOT succeeded, which indicates a problem
+    // with the file and/or code and needs to be investigated!
+    edm::LogError("TriggerBlock") << "Error! HLT config extraction with process name "
+				  << hltTag_.process() << " failed";
+    // In this case, all access methods will return empty values!
+  }
+}
 void TriggerBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   // Reset the vectors
   l1physbits_->clear();

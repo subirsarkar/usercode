@@ -91,6 +91,8 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.nTrkHollowCone04   = v.nTrkHollowConeDR04();
 
       photon.hasPixelSeed       = v.hasPixelSeed(); 
+      //photon.passElectronVeto   = v.passElectronVeto();
+
       photon.ecalIso            = v.ecalIso();
       photon.hcalIso            = v.hcalIso();
       photon.trackIso           = v.trackIso();
