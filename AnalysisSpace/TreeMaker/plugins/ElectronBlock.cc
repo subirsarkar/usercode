@@ -14,7 +14,7 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
-//#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
+#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
 
 #include "AnalysisSpace/TreeMaker/interface/PhysicsObjects.h"
 #include "AnalysisSpace/TreeMaker/plugins/ElectronBlock.h"
@@ -31,7 +31,6 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
   vertexToken_(consumes<reco::VertexCollection>(vertexTag_)),
   electronToken_(consumes<pat::ElectronCollection>(electronTag_))
 {
-#if 0
   // Electron MVA part
   std::vector<edm::FileInPath> wtFileList;
   wtFileList.push_back(iConfig.getParameter<edm::FileInPath>("IdMVA_EB_Weights"));
@@ -39,18 +38,16 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
 
   vector<string> wtList;
   for (unsigned i = 0 ; i < wtFileList.size() ; i++) {
-    wtList.push_back(wtFileList.fullPath());
+    wtList.push_back(wtFileList[i].fullPath());
   }
   mvaTrig_ = new EGammaMvaEleEstimatorCSA14();
   mvaTrig_->initialize("BDT",
 			EGammaMvaEleEstimatorCSA14::kTrig,
 			true,
 			wtList);
-#endif
-
 }
 ElectronBlock::~ElectronBlock() {
-  //delete mvaTrig_;
+  delete mvaTrig_;
   delete list_;
 }
 void ElectronBlock::beginJob()
@@ -184,8 +181,8 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       reco::GsfElectron::PflowIsolationVariables pfIso = v.pfIsolationVariables();
       electron.sumChargedHadronPt = pfIso.sumChargedHadronPt;
       electron.sumPUPt = pfIso.sumPUPt;
-      //      electron.sumNeutralHadronEt = pfIso.sumNeutralHadronEt;
-      //electron.sumPhotonEt = pfIso.sumPhotonEt;
+      electron.sumNeutralHadronEt = pfIso.sumNeutralHadronEt;
+      electron.sumPhotonEt = pfIso.sumPhotonEt;
       float absiso = pfIso.sumChargedHadronPt + std::max(0.0, pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - 0.5 * pfIso.sumPUPt);
       float iso = absiso/(v.p4().pt());
       electron.pfRelIso = iso;
@@ -282,7 +279,7 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       for (const pat::Electron::IdPair& pa: v.electronIDs())
 	electron.idmap[pa.first] = pa.second;
 
-      //electron.mvaId = mvaTrig_->mvaValue(v, false);
+      electron.mvaId = mvaTrig_->mvaValue(v, false);
 
       list_->push_back(electron);
     }

@@ -118,7 +118,9 @@ namespace vhtm {
 
     float sumChargedHadronPt;
     float sumPUPt;
-
+    float sumNeutralHadronEt;
+    float sumPhotonEt;
+ 
     int missingHits;
 
     // IP against PV
@@ -136,6 +138,7 @@ namespace vhtm {
     bool isTriggerElectron;
     int fidFlag;
     std::map<std::string, float> idmap;
+    float mvaId; 
     int selbit;
 
     ClassDef(Electron, 1)

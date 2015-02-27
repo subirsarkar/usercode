@@ -21,7 +21,7 @@
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 
-//class EGammaMvaEleEstimatorCSA14;
+class EGammaMvaEleEstimatorCSA14;
 namespace vhtm {
   class Electron;
 }
@@ -46,7 +46,7 @@ private:
   int verbosity_;
   bool bsCorr_;
 
-  //  EGammaMvaEleEstimatorCSA14* mvaTrig_;
+  EGammaMvaEleEstimatorCSA14* mvaTrig_;
 
   const edm::InputTag bsTag_;
   const edm::InputTag vertexTag_;

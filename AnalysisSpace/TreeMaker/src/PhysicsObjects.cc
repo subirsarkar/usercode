@@ -80,6 +80,8 @@ vhtm::Electron::Electron():
   photonIso(-999),
   sumChargedHadronPt(-999),
   sumPUPt(-999),
+  sumNeutralHadronEt(-999),
+  sumPhotonEt(-999),
   missingHits(99),
   dB(999),
   edB(-999),
@@ -91,6 +93,7 @@ vhtm::Electron::Electron():
   mvaPreselection(false),
   isTriggerElectron(false),
   fidFlag(0),
+  mvaId(-999),
   selbit(0)
 {
   idmap.clear();
