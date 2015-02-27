@@ -64,18 +64,19 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.vz     = v.vz();
 
       const reco::SuperClusterRef sCluster = v.superCluster(); 
-      photon.scEnergy    = sCluster->energy();
-      photon.scEta       = sCluster->eta();
-      photon.scPhi       = sCluster->phi();
-      photon.scSize      = sCluster->clustersSize();
-      photon.scEtaWidth  = sCluster->etaWidth();
-      photon.scPhiWidth  = sCluster->phiWidth();
-      photon.scEt        = sCluster->energy()/cosh(sCluster->eta());
-      photon.scRawEnergy = sCluster->rawEnergy();
-      photon.scx         = sCluster->x();
-      photon.scy         = sCluster->y();
-      photon.scz         = sCluster->z();
-
+      if (sCluster.isNonnull()) {
+	photon.scEnergy    = sCluster->energy();
+	photon.scEta       = sCluster->eta();
+	photon.scPhi       = sCluster->phi();
+	photon.scSize      = sCluster->clustersSize();
+	photon.scEtaWidth  = sCluster->etaWidth();
+	photon.scPhiWidth  = sCluster->phiWidth();
+	photon.scEt        = sCluster->energy()/cosh(sCluster->eta());
+	photon.scRawEnergy = sCluster->rawEnergy();
+	photon.scx         = sCluster->x();
+	photon.scy         = sCluster->y();
+	photon.scz         = sCluster->z();
+      }
       photon.isoEcalRecHit03    = v.ecalRecHitSumEtConeDR03();
       photon.isoHcalRecHit03    = v.hcalTowerSumEtConeDR03();
       photon.isoSolidTrkCone03  = v.trkSumPtSolidConeDR03();
@@ -91,7 +92,7 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.nTrkHollowCone04   = v.nTrkHollowConeDR04();
 
       photon.hasPixelSeed       = v.hasPixelSeed(); 
-      //photon.passElectronVeto   = v.passElectronVeto();
+      photon.passElectronVeto   = v.passElectronVeto();
 
       photon.ecalIso            = v.ecalIso();
       photon.hcalIso            = v.hcalIso();

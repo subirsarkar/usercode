@@ -32,6 +32,8 @@ class MuonBlock : public edm::EDAnalyzer
   int fnMuon_;
 
   const int verbosity_;
+  const bool keepOnlyGlobalMuons_;
+
   const edm::InputTag muonTag_;
   const edm::InputTag vertexTag_;
   const edm::InputTag bsTag_;

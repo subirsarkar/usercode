@@ -281,6 +281,7 @@ namespace vhtm {
   public:
     Muon();
     ~Muon() {}
+    bool isGlobalMuon;
     bool isTrackerMuon;
     bool isPFMuon;
     double eta;
@@ -291,10 +292,8 @@ namespace vhtm {
     double energy;
     int charge;
     double trkD0;
-
     double trkDz;
-
-    double globalChi2;
+    double normChi2;
     float trkIso;
     float ecalIso;
     float hcalIso;

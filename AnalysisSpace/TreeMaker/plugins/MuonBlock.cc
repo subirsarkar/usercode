@@ -23,6 +23,7 @@
 
 MuonBlock::MuonBlock(const edm::ParameterSet& iConfig):
   verbosity_(iConfig.getUntrackedParameter<int>("verbosity", 0)),
+  keepOnlyGlobalMuons_(iConfig.getUntrackedParameter<bool>("keepOnlyGlobalMuons", false)),
   muonTag_(iConfig.getUntrackedParameter<edm::InputTag>("muonSrc", edm::InputTag("selectedPatMuons"))),
   vertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("vertexSrc", edm::InputTag("goodOfflinePrimaryVertices"))),
   bsTag_(iConfig.getUntrackedParameter<edm::InputTag>("offlineBeamSpot", edm::InputTag("offlineBeamSpot"))),
@@ -65,12 +66,21 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	edm::LogInfo("MuonBlock") << "Too many PAT Muons, fnMuon = " << list_->size();
 	break;
       }
-      // consider only global muons
-      if (!v.isGlobalMuon()) continue;
+      // optionally consider only global muons
+      if (keepOnlyGlobalMuons_ && !v.isGlobalMuon()) continue;
+
       reco::TrackRef tk  = v.innerTrack(); // tracker segment only
+      bool hasInnerTrk = tk.isNonnull(); 
+
       reco::TrackRef gtk = v.globalTrack();
+      bool hasGlobalTrk = gtk.isNonnull(); 
+      if ( !hasGlobalTrk && !hasInnerTrk) {
+	edm::LogError("MuonBlock") << "Strange! Muon has neither Global nor Inner track, skipping.";
+        continue;
+      }
 
       vhtm::Muon muon;
+      muon.isGlobalMuon  = v.isGlobalMuon() ? true : false;
       muon.isTrackerMuon = v.isTrackerMuon() ? true : false;
       muon.isPFMuon      = v.isPFMuon();
 
@@ -84,18 +94,20 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double trkd0 = tk->d0();
       double trkdz = tk->dz();
       if (bsCorr_) {
-        if (beamSpot.isValid()) {
-          trkd0 = -(tk->dxy(beamSpot->position()));
-          trkdz = tk->dz(beamSpot->position());
-        }
-        else
-          edm::LogError("MuonsBlock") << "Error >> Failed to get reco::BeamSpot for label: "
-                                      << bsTag_;
+	if (beamSpot.isValid()) {
+	  trkd0 = -tk->dxy(beamSpot->position());
+	  trkdz = tk->dz(beamSpot->position());
+	}
+        else {
+	  edm::LogError("MuonsBlock") << "Error >> Failed to get reco::BeamSpot for label: "
+				      << bsTag_;
+	}
       }
-      muon.trkD0      = trkd0;
-      muon.trkDz      = trkdz;
-      muon.globalChi2 = v.normChi2();
-      muon.passID     = v.muonID(muonID_) ? true : false;
+      muon.trkD0 = trkd0;
+      muon.trkDz = trkdz;
+
+      muon.normChi2 = (hasGlobalTrk) ? v.normChi2() : (tk->ndof() > 0 ? tk->chi2()/tk->ndof() : 999);
+      muon.passID   = v.muonID(muonID_) ? true : false;
 
       double dxyWrtPV = -99.;
       double dzWrtPV = -99.;
@@ -131,7 +143,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                                    << vertexTag_;
       }
       // Hit pattern
-      const reco::HitPattern& hitp = gtk->hitPattern(); // innerTrack will not provide Muon Hits
+      const reco::HitPattern& hitp = (hasGlobalTrk) ? gtk->hitPattern() : tk->hitPattern(); // innerTrack will not provide Muon Hits
       muon.pixHits = hitp.numberOfValidPixelHits();
       muon.trkHits = hitp.numberOfValidTrackerHits();
       muon.muoHits = hitp.numberOfValidMuonHits();
@@ -181,8 +193,8 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.stationGapMaskDistance  = v.stationGapMaskDistance();
       muon.stationGapMaskPull      = v.stationGapMaskPull();
 
-      double normalizeChi2 = v.globalTrack()->normalizedChi2();
-      double ptError = v.innerTrack()->ptError()/v.innerTrack()->pt();
+      double normChi2 = muon.normChi2;
+      double ptError = tk->ptError()/tk->pt();
 
       bool muonID = v.isGlobalMuon() && 
 	v.isTrackerMuon() && 
@@ -190,7 +202,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	muon.isAllArbitrated && 
 	std::fabs(dxyWrtPV) < 0.02 && 
 	std::fabs(dzWrtPV) < 0.2 && 
-	normalizeChi2 < 10 && 
+	normChi2 < 10 && 
 	ptError < 0.1 && 
 	muon.trkHits >= 10 && 
 	muon.pixHits >= 1 && 

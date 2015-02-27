@@ -12,13 +12,13 @@
     <version ClassVersion="1" checksum="1101605653" />
   </class>
   <class name="vhtm::Muon" ClassVersion="1">
-    <version ClassVersion="1" checksum="1114054918" />
+    <version ClassVersion="1" checksum="1207659329" />
   </class>
   <class name="vhtm::Jet" ClassVersion="1">
-    <version ClassVersion="1" checksum="1431365155"/>
+    <version ClassVersion="1" checksum="2808394157"/>
   </class>
   <class name="vhtm::MET" ClassVersion="1">
-    <version ClassVersion="1" checksum="1036931265" />
+    <version ClassVersion="1" checksum="2054402612" />
   </class>
   <class name="vhtm::Vertex" ClassVersion="1">
     <version ClassVersion="1" checksum="2524556747" />
@@ -39,7 +39,7 @@
     <version ClassVersion="1" checksum="3208282312" />
   </class>
   <class name="vhtm::Photon" ClassVersion="1">
-    <version ClassVersion="1" checksum="2620978091" />
+    <version ClassVersion="1" checksum="298190102" />
   </class>
   <class name="std::vector<vhtm::Electron>" persistent="true" />
   <class name="std::vector<vhtm::Muon>" persistent="true" />
