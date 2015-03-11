@@ -19,11 +19,9 @@ TriggerBlock::TriggerBlock(const edm::ParameterSet& iConfig) :
   verbosity_(iConfig.getUntrackedParameter<int>("verbosity", 0)),
   l1Tag_(iConfig.getUntrackedParameter<edm::InputTag>("l1InputTag", edm::InputTag("gtDigis"))),
   hltTag_(iConfig.getUntrackedParameter<edm::InputTag>("hltInputTag", edm::InputTag("TriggerResults","","HLT"))),
-  prescaleTag_(iConfig.getUntrackedParameter<edm::InputTag>("prescaleInputTag", edm::InputTag("patTrigger"))),
   hltPathsOfInterest_(iConfig.getParameter<std::vector<std::string> >("hltPathsOfInterest")),
   l1Token_(consumes<L1GlobalTriggerReadoutRecord>(l1Tag_)),
-  hltToken_(consumes<edm::TriggerResults>(hltTag_)),
-  prescaleToken_(consumes<pat::PackedTriggerPrescales>(prescaleTag_))
+  hltToken_(consumes<edm::TriggerResults>(hltTag_))
 {
 }
 TriggerBlock::~TriggerBlock() {
@@ -59,6 +57,17 @@ void TriggerBlock::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
     // if init returns TRUE, initialisation has succeeded!
     edm::LogInfo("TriggerBlock") << "HLT config with process name "
 				 << hltTag_.process() << " successfully extracted";
+    matchedPathList_.clear();
+    const std::vector<std::string>& pathList = hltConfig_.triggerNames();
+    for (const std::string& path: pathList) {
+      if (hltPathsOfInterest_.size()) {
+        int nmatch = 0;
+        for (const std::string& kt: hltPathsOfInterest_)
+          nmatch += TPRegexp(kt).Match(path);
+        if (!nmatch) continue;
+      }
+      matchedPathList_.push_back(path);
+    }
   }
   else {
     // if init returns FALSE, initialisation has NOT succeeded, which indicates a problem
@@ -96,29 +105,55 @@ void TriggerBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   found = iEvent.getByToken(hltToken_, triggerResults);
   if (found && triggerResults.isValid()) {
     edm::LogInfo("TriggerBlock") << "Successfully obtained " << hltTag_;
-
-    edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
-    iEvent.getByToken(prescaleToken_, triggerPrescales);
-
-    const edm::TriggerNames &names = iEvent.triggerNames(*triggerResults);
-    for (unsigned int i = 0; i < triggerResults->size(); ++i) {
-      std::string path = names.triggerName(i);
-      if (hltPathsOfInterest_.size()) {
-        int nmatch = 0;
-        for (auto kt: hltPathsOfInterest_) {
-          nmatch += TPRegexp(kt).Match(path);
-        }
-        if (!nmatch) continue;
-      }
+    for (auto path: matchedPathList_) {
       hltpaths_->push_back(path);
-      hltprescales_->push_back(triggerPrescales->getPrescaleForIndex(i));
-      hltresults_->push_back((triggerResults->accept(i) ? 1 : 0));
-    }
+
+      int fired = -1;
+      unsigned int index = hltConfig_.triggerIndex(path);
+      if (index < triggerResults->size())
+        fired = (triggerResults->accept(index)) ? 1 : 0;
+      else
+	edm::LogInfo("TriggerBlock") << "Requested HLT path \"" << path << "\" does not exist";
+      hltresults_->push_back(fired);
+
+      int prescale = -1;
+      if (hltConfig_.prescaleSet(iEvent, iSetup) < 0)
+	edm::LogError("TriggerBlock") << "The prescale set index number could not be obtained for HLT path: "
+                                      << path;
+      else
+        prescale = hltConfig_.prescaleValue(iEvent, iSetup, path);
+      hltprescales_->push_back(prescale);
+
+      if (verbosity_) {
+	auto a = hltConfig_.prescaleValues(iEvent, iSetup, path);
+	edm::LogInfo("TriggerBlock") 
+	  << ">>> Path: " << (path) 
+	  << ", prescale: " << prescale 
+	  << ", fired: " << fired
+	  << ", PrescaleValues L1: " << a.first 
+	  << ", PrescaleValues HLT: " << a.second;
+    
+        auto d = hltConfig_.moduleLabels(path);
+        for (auto v: d)
+	  edm::LogInfo("TriggerBlock") << "\tModule Labels: " << v;
+      }    
+    }      
+    if (verbosity_) {
+      const std::vector<std::string>& b = hltConfig_.prescaleLabels();
+      for (auto v: b)
+	edm::LogInfo("TriggerBlock") << "\tPrescale Labels: " << v;
+
+      const std::map<std::string, std::vector<unsigned int> >& c = hltConfig_.prescaleTable();
+      for (auto ptr: c) {
+	edm::LogInfo("TriggerBlock") << "Key  : " << ptr.first << ": ";
+        for (auto v: ptr.second)
+	  edm::LogInfo("TriggerBlock") << "value: " << v;
+      }
+    } 
   } 
-  else {
+  else
     edm::LogError("TriggerBlock") << "Failed to get TriggerResults for label: "
                                   << hltTag_;
-  }
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(TriggerBlock);

@@ -45,7 +45,9 @@ private:
 
   int verbosity_;
   bool bsCorr_;
+  bool trigMode_;
 
+  std::vector<std::string> mvaWeightFiles_;
   EGammaMvaEleEstimatorCSA14* mvaTrig_;
 
   const edm::InputTag bsTag_;

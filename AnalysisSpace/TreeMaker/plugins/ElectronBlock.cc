@@ -24,6 +24,7 @@
 ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
   verbosity_(iConfig.getUntrackedParameter<int>("verbosity", 0)),
   bsCorr_(iConfig.getUntrackedParameter<bool>("beamSpotCorr", false)),
+  trigMode_(iConfig.getUntrackedParameter<bool>("useTrigMode", false)),
   bsTag_(iConfig.getUntrackedParameter<edm::InputTag>("offlineBeamSpot", edm::InputTag("offlineBeamSpot"))),
   vertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("vertexSrc", edm::InputTag("goodOfflinePrimaryVertices"))),
   electronTag_(iConfig.getUntrackedParameter<edm::InputTag>("electronSrc", edm::InputTag("selectedPatElectrons"))),
@@ -32,19 +33,16 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
   electronToken_(consumes<pat::ElectronCollection>(electronTag_))
 {
   // Electron MVA part
-  std::vector<edm::FileInPath> wtFileList;
-  wtFileList.push_back(iConfig.getParameter<edm::FileInPath>("IdMVA_EB_Weights"));
-  wtFileList.push_back(iConfig.getParameter<edm::FileInPath>("IdMVA_EE_Weights"));
-
-  vector<string> wtList;
-  for (unsigned i = 0 ; i < wtFileList.size() ; i++) {
-    wtList.push_back(wtFileList[i].fullPath());
+  std::vector<std::string> wtFiles = iConfig.getParameter<std::vector<std::string> >("mvaWeightFiles");
+  for (size_t i = 0; i < wtFiles.size(); ++i) {
+    std::string path = edm::FileInPath(wtFiles[i].c_str()).fullPath();
+    mvaWeightFiles_.push_back(path);
   }
   mvaTrig_ = new EGammaMvaEleEstimatorCSA14();
-  mvaTrig_->initialize("BDT",
-			EGammaMvaEleEstimatorCSA14::kTrig,
-			true,
-			wtList);
+  mvaTrig_->initialize("BDT", // fixed
+			((trigMode_) ? EGammaMvaEleEstimatorCSA14::kTrig :  EGammaMvaEleEstimatorCSA14::kNonTrig),
+			true, // fixed
+			mvaWeightFiles_);
 }
 ElectronBlock::~ElectronBlock() {
   delete mvaTrig_;
