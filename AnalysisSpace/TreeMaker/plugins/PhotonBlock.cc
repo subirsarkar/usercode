@@ -94,10 +94,6 @@ void PhotonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       photon.hasPixelSeed       = v.hasPixelSeed(); 
       photon.passElectronVeto   = v.passElectronVeto();
 
-      photon.ecalIso            = v.ecalIso();
-      photon.hcalIso            = v.hcalIso();
-      photon.trackIso           = v.trackIso();
-
       photon.chargedHadIso      = v.chargedHadronIso();
       photon.neutralHadIso      = v.neutralHadronIso();
       photon.photonIso          = v.photonIso();

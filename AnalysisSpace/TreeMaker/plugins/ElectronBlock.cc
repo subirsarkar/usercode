@@ -39,9 +39,9 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
     mvaWeightFiles_.push_back(path);
   }
   mvaTrig_ = new EGammaMvaEleEstimatorCSA14();
-  mvaTrig_->initialize("BDT", // fixed
-			((trigMode_) ? EGammaMvaEleEstimatorCSA14::kTrig :  EGammaMvaEleEstimatorCSA14::kNonTrig),
-			true, // fixed
+  mvaTrig_->initialize("BDT",
+		       ((trigMode_) ? EGammaMvaEleEstimatorCSA14::kTrig : ((wtFiles.size() > 4) ? EGammaMvaEleEstimatorCSA14::kNonTrigPhys14 : EGammaMvaEleEstimatorCSA14::kNonTrig)),
+			true,
 			mvaWeightFiles_);
 }
 ElectronBlock::~ElectronBlock() {
@@ -82,33 +82,52 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       bool hasGsfTrack = v.gsfTrack().isNonnull() ? true : false;
 
       vhtm::Electron electron;
-      electron.ecalDriven      = v.ecalDrivenSeed();
-      electron.eta             = v.eta();
-      electron.phi             = v.phi();
-      electron.pt              = v.pt();
-      electron.hasGsfTrack     = hasGsfTrack;
-      electron.energy          = v.energy();
-      electron.caloEnergy      = v.ecalEnergy();
-      electron.charge          = v.charge();
+      electron.eta         = v.eta();
+      electron.phi         = v.phi();
+      electron.pt          = v.pt();
+      electron.ecalDriven  = v.ecalDrivenSeed();
+      electron.hasGsfTrack = hasGsfTrack;
+      electron.energy      = v.energy();
+      electron.caloEnergy  = v.ecalEnergy();
+      electron.charge      = v.charge();
+      electron.eOverPOut   = v.eEleClusterOverPout();   
   
       float nMissingHits = 0;
       double dxyWrtPV = -99.;
       double dzWrtPV = -99.;
 
+      double trkd0 = -999;
+      double trkdz = -999;
+      float trackPt = -99;
+      float trackP = -99;
+      int pixHits = -1;
+      int trkHits = -1;
+      int nValidHits = -1;
+      int missingHits = 999;
+      int nLayers = -1;
+
+      double minVtxDist3D = 99.;
+      int indexVtx = -1;
+      double vertexDistZ = 99.;
+
+      float chi2 = 99;
       if (hasGsfTrack) {
         reco::GsfTrackRef tk = v.gsfTrack();
-        electron.trackPt = tk->pt();
+        trackP = tk->p();
+        trackPt = tk->pt();
 
         // Hit pattern
         const reco::HitPattern& hitp = tk->hitPattern();
-        electron.pixHits = hitp.numberOfValidPixelHits();
-        electron.trkHits = hitp.numberOfValidTrackerHits();
+        pixHits = hitp.numberOfValidPixelHits();
+        trkHits = hitp.numberOfValidTrackerHits();
 
-        electron.nValidHits  = tk->numberOfValidHits();
-        electron.missingHits = hitp.numberOfHits(reco::HitPattern::MISSING_INNER_HITS);//nMissingHits;
+        nValidHits  = tk->numberOfValidHits();
+        missingHits = hitp.numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
+	nLayers = hitp.trackerLayersWithMeasurement();
+        chi2 = tk->normalizedChi2();
 
-        double trkd0 = tk->d0();
-        double trkdz = tk->dz();
+        trkd0 = tk->d0();
+        trkdz = tk->dz();
         if (bsCorr_) {
           if (beamSpot.isValid()) {
             trkd0 = -(tk->dxy(beamSpot->position()));
@@ -118,20 +137,13 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
             edm::LogError("ElectronBlock") << "Error >> Failed to get BeamSpot for label: "
                                            << bsTag_;
         }
-        electron.trkD0 = trkd0;
-        electron.trkDz = trkdz;
 
         if (primaryVertices.isValid()) {
           const reco::Vertex& vit = primaryVertices->front(); // Highest sumPt vertex
           dxyWrtPV = tk->dxy(vit.position());
           dzWrtPV  = tk->dz(vit.position());
-          electron.dxyPV = dxyWrtPV;
-          electron.dzPV  = dzWrtPV;
 
           // Vertex association
-          double minVtxDist3D = 9999.;
-          int indexVtx = -1;
-          double vertexDistZ = 9999.;
           edm::LogInfo("ElectronBlock") << "Total # Primary Vertices: " << primaryVertices->size();
           for (auto vit = primaryVertices->begin(); vit != primaryVertices->end(); ++vit) {
             double dxy = tk->dxy(vit->position());
@@ -143,37 +155,57 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
               vertexDistZ = dz;
             }
           }
-          electron.vtxDist3D = minVtxDist3D;
-          electron.vtxIndex = indexVtx;
-          electron.vtxDistZ = vertexDistZ;
         }
         else {
           edm::LogError("ElectronBlock") << "Error >> Failed to get VertexCollection for label: "
                                          << vertexTag_;
         }
       }
+      electron.trackPt = trackPt;
+      electron.trackP = trackP;
+      electron.trkD0 = trkd0;
+      electron.trkDz = trkdz;
+      electron.normalizedChi2 = chi2;
+
+      electron.pixHits = pixHits;
+      electron.trkHits = trkHits;
+
+      electron.nValidHits  = nValidHits;
+      electron.missingHits = missingHits;
+      electron.nLayers = nLayers;
+
+      electron.dxyPV = dxyWrtPV;
+      electron.dzPV  = dzWrtPV;
+
+      electron.vtxDist3D = minVtxDist3D;
+      electron.vtxIndex = indexVtx;
+      electron.vtxDistZ = vertexDistZ;
+
       // ID variables
       float dPhi  = v.deltaPhiSuperClusterTrackAtVtx();
       float dEta  = v.deltaEtaSuperClusterTrackAtVtx();
-      float sihih = v.sigmaIetaIeta();
-      float hoe   = v.hadronicOverEm(); // v.hcalOverEcal();
+      float sihih = v.full5x5_sigmaIetaIeta();
+      float hoe   = v.hadronicOverEm();
 
       electron.hoe           = hoe;
       electron.eop           = v.eSuperClusterOverP();
-      electron.sigmaEtaEta   = v.sigmaEtaEta();
       electron.sigmaIEtaIEta = sihih;
+      electron.sigmaIPhiIPhi = v.full5x5_sigmaIphiIphi();
       electron.deltaPhiTrkSC = dPhi;
       electron.deltaEtaTrkSC = dEta;
-      electron.classif       = v.classification();
+      electron.deltaEtaCalo  = v.deltaEtaSeedClusterTrackAtCalo();
+      electron.r9 = v.full5x5_r9();
+      electron.e1x5 = v.full5x5_e1x5();
+      electron.e5x5 = v.full5x5_e5x5();
 
       // SC associated with electron
       electron.scEn  = v.superCluster()->energy();
       electron.scEta = v.superCluster()->eta();
       electron.scPhi = v.superCluster()->phi();
-      electron.scET  = v.superCluster()->energy()/cosh(v.superCluster()->eta());
       electron.scRawEnergy = v.superCluster()->rawEnergy();
-
-      electron.relIso = (v.trackIso() + v.ecalIso() + v.hcalIso())/v.pt();
+      electron.scEtaWidth = v.superCluster()->etaWidth();
+      electron.scPhiWidth = v.superCluster()->phiWidth();
+      electron.scPreshowerEnergy = v.superCluster()->preshowerEnergy();
 
       // PF Isolation
       reco::GsfElectron::PflowIsolationVariables pfIso = v.pfIsolationVariables();
@@ -182,14 +214,9 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electron.sumNeutralHadronEt = pfIso.sumNeutralHadronEt;
       electron.sumPhotonEt = pfIso.sumPhotonEt;
       float absiso = pfIso.sumChargedHadronPt + std::max(0.0, pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - 0.5 * pfIso.sumPUPt);
-      float iso = absiso/(v.p4().pt());
+      float iso = absiso/v.pt();
       electron.pfRelIso = iso;
 
-      // isolation information
-      electron.chargedHadronIso = v.chargedHadronIso();
-      electron.neutralHadronIso = v.neutralHadronIso();
-      electron.photonIso        = v.photonIso();
-  
       // IP information
       electron.dB    = v.dB(pat::Electron::PV2D);
       electron.edB   = v.edB(pat::Electron::PV2D);
@@ -203,7 +230,7 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       // other useful quantities
       bool myTrigPresel = false;
       double pt = v.pt();
-      if (std::abs(v.superCluster()->eta()) < 1.485) {
+      if (std::fabs(v.superCluster()->eta()) < 1.485) {
 	if (sihih < 0.014 &&
 	    hoe < 0.15 &&
 	    v.dr03TkSumPt()/pt < 0.2 &&

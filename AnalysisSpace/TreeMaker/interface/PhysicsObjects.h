@@ -18,7 +18,7 @@ namespace vhtm {
     float eta;
     float phi;
 
-    ClassDef(Candidate,1)
+    ClassDef(Candidate, 1)
   };
   class Event: public TObject {
   public:
@@ -41,15 +41,15 @@ namespace vhtm {
     //bool isBeamScraping;
     bool passHBHENoiseFilter;
   
-    double rho;
-    double rhoNeutral;
+    float rho;
+    float rhoNeutral;
     int nvtx; 
 
     std::vector<int> nPU;
     std::vector<int> bunchCrossing;
     std::vector<int> trueNInt;
   
-    ClassDef(Event,1)
+    ClassDef(Event, 1)
   };
   class GenEvent: public TObject {
   public:
@@ -60,69 +60,70 @@ namespace vhtm {
     double ptHat;
     std::vector<double> pdfWeights;
   
-    ClassDef(GenEvent,1)
+    ClassDef(GenEvent, 1)
   };
-  
   class Electron: public TObject {
   public:
     Electron();
-    ~Electron() {}
-    double eta;
-    double phi;
-    double pt;
+    virtual ~Electron() {}
+    float eta;
+    float phi;
+    float pt;
     bool ecalDriven;
     bool hasGsfTrack;
-    double trackPt;
-    double energy;
-    double caloEnergy;
-    int charge;
+    float energy;
+    float caloEnergy;
+    float charge;
+    float eOverPOut;
+
+    float trackP;
+    float trackPt;
+    double trkD0;
+    double trkDz;
+    float normalizedChi2;
     int pixHits;
     int trkHits;
     int nValidHits;
-    double trkD0;
-    double trkDz;
-    // ID variables
-    double hoe;
-    double eop;
-    double sigmaEtaEta;
-    double sigmaIEtaIEta;
-    double deltaPhiTrkSC;
-    double deltaEtaTrkSC;
-    int classif;
-  
-    // Vertex
-    double vx;
-    double vy;
-    double vz;
+    int missingHits;
+    int nLayers;
 
-    // SC associated with electron
-    double scEn;
-    double scEta;
-    double scPhi;
-    double scET;
-    double scRawEnergy;
-  
-    // Vertex association variables
     double dxyPV;
     double dzPV;
+
     double vtxDist3D;
     int vtxIndex;
     double vtxDistZ;
-    float relIso;
+
+    // ID variables
+    float hoe;
+    float eop;
+    float sigmaIEtaIEta;
+    float sigmaIPhiIPhi;
+    float deltaPhiTrkSC;
+    float deltaEtaTrkSC;
+    float deltaEtaCalo;
+    float r9;
+    float e1x5;
+    float e5x5;
+  
+    // SC associated with electron
+    float scEn;
+    float scEta;
+    float scPhi;
+    float scRawEnergy;
+    float scEtaWidth;
+    float scPhiWidth;
+    float scPreshowerEnergy;
+
+    // Vertex association variables
     float pfRelIso;
 
     // PFlow isolation variable
-    float chargedHadronIso;
-    float neutralHadronIso;
-    float photonIso;
-
     float sumChargedHadronPt;
     float sumPUPt;
     float sumNeutralHadronEt;
     float sumPhotonEt;
  
-    int missingHits;
-
     // IP against PV
     double dB;
     double edB;
@@ -133,10 +134,16 @@ namespace vhtm {
     int nBrems;
     float fbrem;
   
-    float hasMatchedConv;
+    bool hasMatchedConv;
     bool mvaPreselection;
     bool isTriggerElectron;
     int fidFlag;
+
+    // Vertex
+    float vx;
+    float vy;
+    float vz;
+
     std::map<std::string, float> idmap;
     float mvaId; 
     int selbit;
@@ -146,72 +153,72 @@ namespace vhtm {
   class GenParticle: public TObject {
   public:
     GenParticle();
-    ~GenParticle() {}
+    virtual ~GenParticle() {}
   
-    double eta;
-    double phi;
-    double p;
-    double px;
-    double py;
-    double pz;
-    double pt;
-    double energy;
+    float eta;
+    float phi;
+    float p;
+    float px;
+    float py;
+    float pz;
+    float pt;
+    float energy;
     int pdgId;
-    double vx;
-    double vy;
-    double vz;
+    float vx;
+    float vy;
+    float vz;
     int status;
-    double charge;
+    float charge;
     int numDaught;
     int numMother;
     int motherIndex;
     std::vector<int> motherIndices;
     std::vector<int> daughtIndices;
   
-    ClassDef(GenParticle,1)
+    ClassDef(GenParticle, 1)
   };
   class GenJet: public TObject {
   public:
     GenJet();
-    ~GenJet() {}
+    virtual ~GenJet() {}
   
-    double eta;
-    double phi;
-    double p;
-    double pt;
-    double energy;
-    double emf;
-    double hadf;
+    float eta;
+    float phi;
+    float p;
+    float pt;
+    float energy;
+    float emf;
+    float hadf;
   
-    ClassDef(GenJet,1)
+    ClassDef(GenJet, 1)
   };
   class MET: public TObject {
   public:
     MET();
-    ~MET() {}
+    virtual ~MET() {}
   
-    double met;
-    double metphi;
-    double sumet;
-    double metuncorr;
-    double metphiuncorr;
-    double sumetuncorr;
-    double metJESUp;
-    double metJESDn;
+    float met;
+    float metphi;
+    float sumet;
+    float metuncorr;
+    float metphiuncorr;
+    float sumetuncorr;
+    float metJESUp;
+    float metJESDn;
   
-    ClassDef(MET,1)
+    ClassDef(MET, 1)
   };
   class Tau: public TObject {
   public:
     Tau();
-    ~Tau() {}
+    virtual ~Tau() {}
   
-    double eta;
-    double phi;
-    double pt;
-    double energy;
-    int charge;
-    double mass;
+    float eta;
+    float phi;
+    float pt;
+    float energy;
+    float charge;
+    float mass;
   
     double dxyPV;
     double dzPV;
@@ -220,9 +227,9 @@ namespace vhtm {
     double vtxDz;
 
     // Leading particle pT
-    double leadChargedParticlePt;
-    double leadNeutralParticlePt;
-    double leadParticlePt;
+    float leadChargedParticlePt;
+    float leadNeutralParticlePt;
+    float leadParticlePt;
 
     std::vector<vhtm::Candidate> sigChHadList;
     std::vector<vhtm::Candidate> sigNeHadList;
@@ -235,68 +242,67 @@ namespace vhtm {
     float ptSumNeutralHadronsIsoCone;
     float ptSumPhotonsIsoCone;
 
-     // tau id. discriminators
-     float decayModeFinding;
-     float decayModeFindingNewDMs;
-     float decayModeFindingOldDMs;
+    // tau id. discriminators
+    float decayModeFinding;
+    float decayModeFindingNewDMs;
+    float decayModeFindingOldDMs;
+    
+    // discriminators against electrons/muons
+    float againstMuonLoose;
+    float againstMuonMedium;
+    float againstMuonTight;
+    
+    float againstMuonLoose3;
+    float againstMuonTight3;
 
-     // discriminators against electrons/muons
-     float againstMuonLoose;
-     float againstMuonMedium;
-     float againstMuonTight;
-
-     float againstMuonLoose3;
-     float againstMuonTight3;
-
-     float againstElectronLoose;
-     float againstElectronMedium;
-     float againstElectronTight;
+    float againstElectronLoose;
+    float againstElectronMedium;
+    float againstElectronTight;
      //float againstElectronMVA;
-  
-     float againstElectronLooseMVA5;
-     float againstElectronMediumMVA5;
-     float againstElectronTightMVA5;
-
-     float byLooseCombinedIsolationDeltaBetaCorr3Hits;
-     float byMediumCombinedIsolationDeltaBetaCorr3Hits;
-     float byTightCombinedIsolationDeltaBetaCorr3Hits;
-     float byCombinedIsolationDeltaBetaCorrRaw3Hits;
-     float chargedIsoPtSum;
-     float neutralIsoPtSum;
-     float puCorrPtSum;
-
-     // kinematic variables for PFJet associated to PFTau
-    double jetPt;
-    double jetEta;
-    double jetPhi;
-     float emFraction;
-    double vx;
-    double vy;
-    double vz;
-  
-    double zvertex;
-    double dxySig;
-       int selbit;
-  
+     
+    float againstElectronLooseMVA5;
+    float againstElectronMediumMVA5;
+    float againstElectronTightMVA5;
+    
+    float byLooseCombinedIsolationDeltaBetaCorr3Hits;
+    float byMediumCombinedIsolationDeltaBetaCorr3Hits;
+    float byTightCombinedIsolationDeltaBetaCorr3Hits;
+    float byCombinedIsolationDeltaBetaCorrRaw3Hits;
+    float chargedIsoPtSum;
+    float neutralIsoPtSum;
+    float puCorrPtSum;
+    
+    // kinematic variables for PFJet associated to PFTau
+    float jetPt;
+    float jetEta;
+    float jetPhi;
+    float emFraction;
+    float vx;
+    float vy;
+    float vz;
+    
+    float zvertex;
+    float dxySig;
+    int selbit;
+    
     ClassDef(Tau, 1)
   };
   class Muon: public TObject {
   public:
     Muon();
-    ~Muon() {}
+    virtual ~Muon() {}
     bool isGlobalMuon;
     bool isTrackerMuon;
     bool isPFMuon;
-    double eta;
-    double phi;
-    double pt;
-
-    double p;
-    double energy;
-    int charge;
+    float eta;
+    float phi;
+    float pt;
+    float p;
+    float energy;
+    float charge;
     double trkD0;
     double trkDz;
-    double normChi2;
+    float normChi2;
     float trkIso;
     float ecalIso;
     float hcalIso;
@@ -319,9 +325,9 @@ namespace vhtm {
     int matches;
     int trackerLayersWithMeasurement;
 
-    double vx;
-    double vy;
-    double vz;
+    float vx;
+    float vy;
+    float vz;
 
     double dB; // PV2D
     double edB; 
@@ -348,15 +354,15 @@ namespace vhtm {
   class Jet: public TObject {
   public:
     Jet();
-    ~Jet() {}
-    double eta;
-    double phi;
-    double pt;
-    double pt_raw;
-    double energy;
-    double energy_raw;
-    double jecUnc;
-    double resJEC;
+    virtual ~Jet() {}
+    float eta;
+    float phi;
+    float pt;
+    float pt_raw;
+    float energy;
+    float energy_raw;
+    float jecUnc;
+    float resJEC;
     int partonFlavour;
 
     float chargedEmEnergyFraction;
@@ -393,15 +399,15 @@ namespace vhtm {
     Vertex();
     virtual ~Vertex() {}
   
-    double x;
-    double y;
-    double z;
-    double xErr;
-    double yErr;
-    double zErr;
-    double rho;
-    double chi2;
-    double ndf;
+    float x;
+    float y;
+    float z;
+    float xErr;
+    float yErr;
+    float zErr;
+    float rho;
+    float chi2;
+    float ndf;
     int ntracks;
     bool isfake;
     bool isvalid;
@@ -415,9 +421,9 @@ namespace vhtm {
     GenMET();
     virtual ~GenMET() {}
   
-    double met;
-    double metphi;
-    double sumet;
+    float met;
+    float metphi;
+    float sumet;
   
     ClassDef(GenMET, 1)
   };
@@ -426,10 +432,10 @@ namespace vhtm {
     TriggerObject();
     virtual ~TriggerObject() {}
   
-    double energy;
-    double pt;
-    double eta;
-    double phi;
+    float pt;
+    float eta;
+    float phi;
+    float energy;
   
     std::map<std::string, unsigned int> pathList;
   
@@ -440,39 +446,40 @@ namespace vhtm {
     Photon();
     virtual ~Photon() {}
     
-    double et;
-    double eta;
-    double clusterEta;
-    double phi;
-    double clusterPhi;
-    double energy;
-    double theta; 
-    double vx;
-    double vy;
-    double vz;
+    float et;
+    float eta;
+    float clusterEta;
+    float phi;
+    float clusterPhi;
+    float energy;
+    float theta; 
+    float vx;
+    float vy;
+    float vz;
     
-    double scEnergy;
-    double scEta;
-    double scPhi;
-    double scSize;
-    double scEtaWidth;
-    double scPhiWidth;
-    double scEt;
-    double scRawEnergy;
-    double scx;
-    double scy;
-    double scz; 
-    double isoEcalRecHit03;
-    double isoHcalRecHit03;
-    double isoSolidTrkCone03;
-    double isoHollowTrkCone03;
+    float scEnergy;
+    float scEta;
+    float scPhi;
+    float scSize;
+    float scEtaWidth;
+    float scPhiWidth;
+    float scEt;
+    float scRawEnergy;
+    float scx;
+    float scy;
+    float scz; 
+
+    float isoEcalRecHit03;
+    float isoHcalRecHit03;
+    float isoSolidTrkCone03;
+    float isoHollowTrkCone03;
     int nTrkSolidCone03;
     int nTrkHollowCone03;
     
-    double isoEcalRecHit04;
-    double isoHcalRecHit04;
-    double isoSolidTrkCone04;
-    double isoHollowTrkCone04;
+    float isoEcalRecHit04;
+    float isoHcalRecHit04;
+    float isoSolidTrkCone04;
+    float isoHollowTrkCone04;
     int nTrkSolidCone04;
     int nTrkHollowCone04;
     
@@ -486,44 +493,41 @@ namespace vhtm {
     bool hasPixelSeed;
     bool passElectronVeto;
 
-    double ecalIso;
-    double hcalIso;
-    double trackIso;
-    double chargedHadIso;
-    double neutralHadIso;
-    double photonIso;
-    double puChargedHadIso;
+    float chargedHadIso;
+    float neutralHadIso;
+    float photonIso;
+    float puChargedHadIso;
     
-    double r9;
-    double hoe;
-    double sigmaEtaEta;
-    double sigmaIEtaIEta;
-    double e1x5;
-    double e2x5; 
-    double e3x3;
-    double e5x5;
-    double r1x5;
-    double r2x5;
-    double maxEnergyXtal;
+    float r9;
+    float hoe;
+    float sigmaEtaEta;
+    float sigmaIEtaIEta;
+    float e1x5;
+    float e2x5; 
+    float e3x3;
+    float e5x5;
+    float r1x5;
+    float r2x5;
+    float maxEnergyXtal;
     std::map<std::string, float> idmap;
     
     bool hasConversionTracks;
     int nTracks;
     bool isConverted;
-    double pairInvMass;
-    double pairCotThetaSeparation;
-    double pairPx;
-    double pairPy;
-    double pairPz;
-    double conv_vx;
-    double conv_vy;
-    double conv_vz;
-    double eovp;
-    double zpv;
-    double distOfMinApproach;
-    double dPhiTracksAtVtx;
-    double dPhiTracksAtEcal;
-    double dEtaTracksAtEcal;  
+    float pairInvMass;
+    float pairCotThetaSeparation;
+    float pairPx;
+    float pairPy;
+    float pairPz;
+    float conv_vx;
+    float conv_vy;
+    float conv_vz;
+    float eovp;
+    float zpv;
+    float distOfMinApproach;
+    float dPhiTracksAtVtx;
+    float dPhiTracksAtEcal;
+    float dEtaTracksAtEcal;  
     
     int selbit;
   

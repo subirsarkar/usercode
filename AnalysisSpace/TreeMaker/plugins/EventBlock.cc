@@ -121,8 +121,8 @@ void EventBlock::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup
     for (const reco::Vertex& v: *primaryVertices) {
       if (!v.isFake() &&
            v.ndof() > vtxMinNDOF_ &&
-	   std::abs(v.z()) <= vtxMaxAbsZ_ &&
-	   std::abs(v.position().rho()) <= vtxMaxd0_)
+	   std::fabs(v.z()) <= vtxMaxAbsZ_ &&
+	   std::fabs(v.position().rho()) <= vtxMaxd0_)
       {
         ev.isPrimaryVertex = true;
         break;
