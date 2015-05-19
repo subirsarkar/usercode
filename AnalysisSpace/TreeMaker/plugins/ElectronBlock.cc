@@ -28,9 +28,11 @@ ElectronBlock::ElectronBlock(const edm::ParameterSet& iConfig):
   bsTag_(iConfig.getUntrackedParameter<edm::InputTag>("offlineBeamSpot", edm::InputTag("offlineBeamSpot"))),
   vertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("vertexSrc", edm::InputTag("goodOfflinePrimaryVertices"))),
   electronTag_(iConfig.getUntrackedParameter<edm::InputTag>("electronSrc", edm::InputTag("selectedPatElectrons"))),
+  pfcandTag_(iConfig.getUntrackedParameter<edm::InputTag>("pfCands",edm::InputTag("packedPFCandidates"))),
   bsToken_(consumes<reco::BeamSpot>(bsTag_)),
   vertexToken_(consumes<reco::VertexCollection>(vertexTag_)),
-  electronToken_(consumes<pat::ElectronCollection>(electronTag_))
+  electronToken_(consumes<pat::ElectronCollection>(electronTag_)),
+  pfToken_(consumes<pat::PackedCandidateCollection>(pfcandTag_))
 {
   // Electron MVA part
   std::vector<std::string> wtFiles = iConfig.getParameter<std::vector<std::string> >("mvaWeightFiles");
@@ -67,10 +69,13 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   if (found && electrons.isValid()) {
     edm::Handle<reco::BeamSpot> beamSpot;
-    if (bsCorr_) iEvent.getByToken(bsToken_, beamSpot);
+    if (bsCorr_) iEvent.getByToken(bsToken_, beamSpot); // no need to return status, check validity later
 
     edm::Handle<reco::VertexCollection> primaryVertices;
-    iEvent.getByToken(vertexToken_, primaryVertices);
+    iEvent.getByToken(vertexToken_, primaryVertices); // no need to return status, check validity later
+
+    edm::Handle<pat::PackedCandidateCollection> pfs;
+    iEvent.getByToken(pfToken_, pfs); // no need to return status, check validity later
 
     edm::LogInfo("ElectronBlock") << "Total # PAT Electrons: " << electrons->size();
     for (const pat::Electron& v: *electrons) {
@@ -217,6 +222,11 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       float iso = absiso/v.pt();
       electron.pfRelIso = iso;
 
+      // isolation information
+      electron.chargedHadronIso = v.chargedHadronIso();
+      electron.neutralHadronIso = v.neutralHadronIso();
+      electron.photonIso        = v.photonIso();
+
       // IP information
       electron.dB    = v.dB(pat::Electron::PV2D);
       electron.edB   = v.edB(pat::Electron::PV2D);
@@ -306,6 +316,34 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       electron.mvaId = mvaTrig_->mvaValue(v, false);
 
+      if (pfs.isValid()) {
+	calcIsoFromPF(0.15, pfs, v, isotemp);
+	electron.isolationMap["c15"] = isotemp;
+
+	isotemp.clear();
+	calcIsoFromPF(0.20, pfs, v, isotemp);
+	electron.isolationMap["c20"] = isotemp;
+
+	isotemp.clear();
+	calcIsoFromPF(0.25, pfs, v, isotemp);
+	electron.isolationMap["c25"] = isotemp;
+
+	isotemp.clear();
+	calcIsoFromPF(0.30, pfs, v, isotemp);
+	electron.isolationMap["c30"] = isotemp;
+	
+	isotemp.clear();
+	calcIsoFromPF(0.35, pfs, v, isotemp);
+	electron.isolationMap["c35"] = isotemp;
+
+	isotemp.clear();
+	calcIsoFromPF(0.40, pfs, v, isotemp);
+	electron.isolationMap["c40"] = isotemp;
+
+	isotemp.clear();
+	calcIsoFromPF(0.45, pfs, v, isotemp);
+	electron.isolationMap["c45"] = isotemp;
+      }
       list_->push_back(electron);
     }
     fnElectron_ = list_->size();
@@ -314,6 +352,52 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     edm::LogError("ElectronBlock") << "Error >> Failed to get pat::Electron Collection for label: "
                                    << electronTag_;
   }
+}
+void ElectronBlock::calcIsoFromPF(const pat::Electron& v, 
+				  const edm::Handle<pat::PackedCandidateCollection>& pfs, 
+				  double cone, std::vector<double>& iso)
+{
+  // initialize sums
+  double chargedHadSum = 0., 
+    chargedSum = 0., 
+    neutralSum = 0., 
+    photonSum = 0., 
+    pileupSum  = 0;
+
+  // now get a list of the PF candidates used to build this lepton, so to exclude them
+  std::vector<reco::CandidatePtr> footprint;
+  for (unsigned int i = 0, i < v.numberOfSourceCandidatePtrs(); ++i) 
+    footprint.push_back(v.sourceCandidatePtr(i));
+  
+  // now loop on pf candidates
+  for (const auto& pf: *pfs) {
+    int pdgid = std::abs(pf.pdgId());
+    double pt = pf.pt();
+    if (deltaR(pf, v) < cone) {
+      // pfcandidate-based footprint removal
+      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfs,i)) != footprint.end()) continue;
+
+      if (pf.charge() == 0) {
+        if (pt > 0.5) {
+          if (pdgid == 22)
+	    photonSum += pt;
+          else 
+            neutralSum += pt;
+        }
+      } 
+      else if (pf.fromPV() >= 2) {
+	chargedSum += pt;
+        if (pdg != 13 && pdg != 11) chargedHadSum += pt;
+      } 
+      else
+        if (pt > 0.5) pileupSum += pt;
+    }
+  }
+  iso.push_back(chargedHadSum);
+  iso.push_back(chargedSum);
+  iso.push_back(neutralSum);
+  iso.push_back(photonSum);
+  iso.push_back(pileupSum);
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(ElectronBlock);

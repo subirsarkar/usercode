@@ -59,9 +59,6 @@ void VertexBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       vertex.chi2       = v.chi2();
       vertex.ndf        = v.ndof();
       vertex.ntracks    = (v.ndof() + 3)/2;
-      //vertex.ntracks    = static_cast<int>(v.tracksSize());
-      //vertex.ntracksw05 = v.nTracks(0.5); // number of tracks in the vertex with weight above 0.5
-      //vertex.sumPt      = v.p4().pt();
       vertex.isfake     = v.isFake();
       vertex.isvalid    = v.isValid();
 

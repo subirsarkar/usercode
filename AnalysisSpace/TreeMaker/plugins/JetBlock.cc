@@ -84,6 +84,7 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
 
       jobj.nConstituents = jet.numberOfDaughters();
 
+      jobj.combinedSecondaryVertexBTag = jet.bDiscriminator("combinedSecondaryVertexBJetTags");
       jobj.combinedInclusiveSecondaryVertexV2BJetTags = jet.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
       jobj.combinedInclusiveSecondaryVertexBTag 
                                        = jet.bDiscriminator("combinedInclusiveSecondaryVertexBJetTags");
@@ -92,6 +93,8 @@ void JetBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
 
       for (const std::pair<std::string, float>& pa: jet.getPairDiscri())
 	jobj.discrimap[pa.first] = pa.second;
+
+      jobj.jpumva = jet.userFloat("pileupJetId:fullDiscriminant");
 
       list_->push_back(jobj);
     }
