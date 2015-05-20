@@ -28,9 +28,6 @@ public:
 
 private:
   std::vector<vhtm::Event>* list_;
-  std::vector<int>* nPU_;
-  std::vector<int>* bunchCrossing_;
-  std::vector<int>* trueNInt_;
 
   const int verbosity_;
   const edm::InputTag l1Tag_;

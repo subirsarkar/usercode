@@ -44,35 +44,17 @@ EventBlock::EventBlock(const edm::ParameterSet& iConfig):
 {
 }
 EventBlock::~EventBlock() {
-  delete nPU_;
-  delete bunchCrossing_;
-  delete trueNInt_;
   delete list_;
 }
 void EventBlock::beginJob() {
-
   // Get TTree pointer
   TTree* tree = vhtm::Utility::getTree("vhtree");
   list_ = new std::vector<vhtm::Event>();
   tree->Branch("Event", "std::vector<vhtm::Event>", &list_, 32000, 2);
-
-  nPU_ = new std::vector<int>();
-  tree->Branch("nPU", "std::vector<int>", &nPU_);
-
-  bunchCrossing_ = new std::vector<int>();
-  tree->Branch("bunchCrossing", "std::vector<int>", &bunchCrossing_);
-
-  trueNInt_ = new std::vector<int>();
-  tree->Branch("trueNInt", "std::vector<int>", &trueNInt_);
 }
 void EventBlock::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup) {
   // Reset the vector
   list_->clear();
-
-  // Clear the independent vectors
-  nPU_->clear();
-  bunchCrossing_->clear();
-  trueNInt_->clear();
 
   // Create Event Object
   vhtm::Event ev;
@@ -193,13 +175,8 @@ void EventBlock::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup
     if (found && puInfo.isValid()) {
       for (const PileupSummaryInfo& v: *puInfo) {
 	ev.bunchCrossing.push_back(v.getBunchCrossing()); // in-time and out-of-time indices
-	bunchCrossing_->push_back(v.getBunchCrossing());
-
 	ev.nPU.push_back(v.getPU_NumInteractions());
-	nPU_->push_back(v.getPU_NumInteractions());
-
 	ev.trueNInt.push_back(v.getTrueNumInteractions());
-	trueNInt_->push_back(v.getTrueNumInteractions());
       }
     }
     // More info about PU is here:
