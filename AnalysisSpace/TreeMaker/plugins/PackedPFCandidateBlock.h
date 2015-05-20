@@ -28,7 +28,7 @@ class PackedPFCandidateBlock : public edm::EDAnalyzer {
   virtual void beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
   virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   virtual void endJob() {}
-  void calcIsoFromPF(double cone, edm::Handle<pat::PackedCandidateCollection>& pfs, const pat::PackedCandidate& v, std::vector<double>& iso);
+  void calcIsoFromPF(const pat::PackedCandidate& v, edm::Handle<pat::PackedCandidateCollection>& pfs, double cone, std::vector<double>& iso);
  public:
   explicit PackedPFCandidateBlock(const edm::ParameterSet& iConfig);
   virtual ~PackedPFCandidateBlock() {}
@@ -42,9 +42,7 @@ class PackedPFCandidateBlock : public edm::EDAnalyzer {
   
   int verbosity_;
   const edm::InputTag pfcandTag_;
-  
   std::vector<int> pdgTosave_;
-  
   const edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
 };
 #endif

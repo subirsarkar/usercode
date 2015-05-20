@@ -44,7 +44,7 @@ namespace vhtm {
     float dxyError;
     float dzError;
 
-    std::map<std::string,std::vector<double> > isolationMap;
+    std::map<std::string, std::vector<double> > isolationMap;
 
     ClassDef(PackedPFCandidate, 1)
   };
@@ -400,6 +400,9 @@ namespace vhtm {
     bool muonID;
 
     int selbit;
+
+    std::map<std::string, std::vector<double> > isolationMap;
+    int nSegments;
 
     ClassDef(Muon, 1)
   };

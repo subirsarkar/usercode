@@ -356,8 +356,8 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
 }
 void ElectronBlock::calcIsoFromPF(const pat::Electron& v, 
-				  const edm::Handle<pat::PackedCandidateCollection>& pfs, 
-				  double cone, std::vector<double>& iso)
+				const edm::Handle<pat::PackedCandidateCollection>& pfs, 
+				double cone, std::vector<double>& iso)
 {
   // initialize sums
   double chargedHadSum = 0., 
@@ -380,7 +380,7 @@ void ElectronBlock::calcIsoFromPF(const pat::Electron& v,
 
       // pfcandidate-based footprint removal
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfs, i)) != footprint.end()) continue;
-
+      
       if (pf.charge() == 0) {
         if (pt > 0.5) {
           if (pdgid == 22)

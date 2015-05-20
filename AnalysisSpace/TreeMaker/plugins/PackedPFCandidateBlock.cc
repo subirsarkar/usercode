@@ -72,7 +72,7 @@ void PackedPFCandidateBlock::analyze(const edm::Event& iEvent, const edm::EventS
       pfCand.dzError = v.dzError();   
       
       std::vector<double> isotemp;   
-      calcIsoFromPF(0.30, pfs, v, isotemp);
+      calcIsoFromPF(v, pfs, 0.30, isotemp);
       pfCand.isolationMap["c30"] = isotemp;
       
       list_->push_back(pfCand);
@@ -84,8 +84,9 @@ void PackedPFCandidateBlock::analyze(const edm::Event& iEvent, const edm::EventS
 					    << pfcandTag_;
   }
 }
-void PackedPFCandidateBlock::calcIsoFromPF(double cone, edm::Handle<pat::PackedCandidateCollection>& pfs, 
-					   const pat::PackedCandidate& v, std::vector<double>& iso)
+void PackedPFCandidateBlock::calcIsoFromPF(const pat::PackedCandidate& v, 
+					   edm::Handle<pat::PackedCandidateCollection>& pfs, 
+					   double cone, std::vector<double>& iso)
 {
   // initialize sums
   double chargedHadSum = 0., 

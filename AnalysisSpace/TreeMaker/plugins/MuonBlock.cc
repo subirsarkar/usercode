@@ -27,11 +27,13 @@ MuonBlock::MuonBlock(const edm::ParameterSet& iConfig):
   muonTag_(iConfig.getUntrackedParameter<edm::InputTag>("muonSrc", edm::InputTag("selectedPatMuons"))),
   vertexTag_(iConfig.getUntrackedParameter<edm::InputTag>("vertexSrc", edm::InputTag("goodOfflinePrimaryVertices"))),
   bsTag_(iConfig.getUntrackedParameter<edm::InputTag>("offlineBeamSpot", edm::InputTag("offlineBeamSpot"))),
+  pfcandTag_(iConfig.getUntrackedParameter<edm::InputTag>("pfCands", edm::InputTag("packedPFCandidates"))),
   bsCorr_(iConfig.getUntrackedParameter<bool>("beamSpotCorr", true)),
   muonID_(iConfig.getUntrackedParameter<std::string>("muonID", "GlobalMuonPromptTight")),
   muonToken_(consumes<pat::MuonCollection>(muonTag_)),
   vertexToken_(consumes<reco::VertexCollection>(vertexTag_)),
-  bsToken_(consumes<reco::BeamSpot>(bsTag_))
+  bsToken_(consumes<reco::BeamSpot>(bsTag_)),
+  pfToken_(consumes<pat::PackedCandidateCollection>(pfcandTag_))
 {
 }
 MuonBlock::~MuonBlock() {
@@ -49,6 +51,9 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Reset the vector and the nObj variables
   list_->clear();
   fnMuon_ = 0;
+
+  edm::Handle<pat::PackedCandidateCollection> pfs;
+  iEvent.getByToken(pfToken_, pfs);
 
   edm::Handle<pat::MuonCollection> muons;
   bool found = iEvent.getByToken(muonToken_, muons);
@@ -222,6 +227,37 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.vy = vertex.y();
       muon.vz = vertex.z();
 
+      // Isolation from packed PF candidates 
+      std::vector<double> isotemp;
+      calcIsoFromPF(v, pfs, 0.15, isotemp);
+      muon.isolationMap["c15"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.20, isotemp);
+      muon.isolationMap["c20"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.25, isotemp);
+      muon.isolationMap["c25"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.30, isotemp);
+      muon.isolationMap["c30"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.35, isotemp);
+      muon.isolationMap["c35"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.40, isotemp);
+      muon.isolationMap["c40"] = isotemp;
+
+      isotemp.clear();
+      calcIsoFromPF(v, pfs, 0.45, isotemp);
+      muon.isolationMap["c45"] = isotemp;
+
+      muon.nSegments = v.numberOfMatches(reco::Muon::SegmentArbitration);
+
       list_->push_back(muon);
     }
     fnMuon_ = list_->size();
@@ -230,6 +266,54 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     edm::LogError("MuonBlock") << "Error >> Failed to get pat::Muon collection for label: "
                                << muonTag_;
   }
+}
+void MuonBlock::calcIsoFromPF(const pat::Muon& v, 
+				const edm::Handle<pat::PackedCandidateCollection>& pfs, 
+				double cone, std::vector<double>& iso)
+{
+  // initialize sums
+  double chargedHadSum = 0., 
+    chargedSum = 0., 
+    neutralSum = 0., 
+    photonSum = 0., 
+    pileupSum  = 0;
+
+  // now get a list of the PF candidates used to build this lepton, so to exclude them
+  std::vector<reco::CandidatePtr> footprint;
+  for (unsigned int i = 0; i < v.numberOfSourceCandidatePtrs(); ++i) 
+    footprint.push_back(v.sourceCandidatePtr(i));
+  
+  // now loop on pf candidates
+  for (unsigned int i = 0; i < pfs->size(); ++i) {
+    const pat::PackedCandidate& pf = (*pfs)[i];
+    int pdgid = std::abs(pf.pdgId());
+    double pt = pf.pt();
+    if (deltaR(pf, v) < cone) {
+
+      // pfcandidate-based footprint removal
+      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfs, i)) != footprint.end()) continue;
+      
+      if (pf.charge() == 0) {
+        if (pt > 0.5) {
+          if (pdgid == 22)
+	    photonSum += pt;
+          else 
+            neutralSum += pt;
+        }
+      } 
+      else if (pf.fromPV() >= 2) {
+	chargedSum += pt;
+        if (pdgid != 13 && pdgid != 11) chargedHadSum += pt;
+      } 
+      else
+        if (pt > 0.5) pileupSum += pt;
+    }
+  }
+  iso.push_back(chargedHadSum);
+  iso.push_back(chargedSum);
+  iso.push_back(neutralSum);
+  iso.push_back(photonSum);
+  iso.push_back(pileupSum);
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(MuonBlock);

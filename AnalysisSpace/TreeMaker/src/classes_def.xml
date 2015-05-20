@@ -12,7 +12,7 @@
     <version ClassVersion="1" checksum="1787652030" />
   </class>
   <class name="vhtm::Muon" ClassVersion="1">
-    <version ClassVersion="1" checksum="1982683854" />
+    <version ClassVersion="1" checksum="2136966830" />
   </class>
   <class name="vhtm::Jet" ClassVersion="1">
     <version ClassVersion="1" checksum="1844948477"/>
