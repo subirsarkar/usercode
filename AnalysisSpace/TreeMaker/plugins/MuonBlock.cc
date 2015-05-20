@@ -163,16 +163,22 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       // PF Isolation
       const reco::MuonPFIsolation& pfIso03 = v.pfIsolationR03();
-      muon.pfChargedIsoR03 = pfIso03.sumChargedParticlePt;
-      muon.sumPUPt03 = pfIso03.sumPUPt;
-      float absiso = pfIso03.sumChargedParticlePt + std::max(0.0, pfIso03.sumNeutralHadronEt + pfIso03.sumPhotonEt - 0.5 * pfIso03.sumPUPt);
-      float iso = absiso/(v.p4().pt());
+      muon.sumChargedParticlePtR03 = pfIso03.sumChargedParticlePt;
+      muon.sumChargedHadronPtR03   = pfIso03.sumChargedHadronPt;
+      muon.sumNeutralHadronEtR03   = pfIso03.sumNeutralHadronEt;
+      muon.sumPhotonEtR03 = pfIso03.sumPhotonEt;
+      muon.sumPUPtR03 = pfIso03.sumPUPt;
+      double absiso = pfIso03.sumChargedHadronPt + std::max(0.0, pfIso03.sumNeutralHadronEt + pfIso03.sumPhotonEt - 0.5 * pfIso03.sumPUPt);
+      double iso = absiso/v.p4().pt();
       muon.pfRelIso03 = iso;
 
       const reco::MuonPFIsolation& pfIso04 = v.pfIsolationR04();
-      muon.pfChargedIsoR04 = pfIso04.sumChargedParticlePt;
-      muon.sumPUPt04 = pfIso04.sumPUPt;
-      absiso = pfIso04.sumChargedParticlePt + std::max(0.0, pfIso04.sumNeutralHadronEt + pfIso04.sumPhotonEt - 0.5 * pfIso04.sumPUPt);
+      muon.sumChargedParticlePt = pfIso04.sumChargedParticlePt;
+      muon.sumChargedHadronPt = pfIso04.sumChargedHadronPt;
+      muon.sumNeutralHadronEt = pfIso04.sumNeutralHadronEt;
+      muon.sumPhotonEt =  pfIso04.sumPhotonEt;
+      muon.sumPUPt = pfIso04.sumPUPt;
+      absiso = pfIso04.sumChargedHadronPt + std::max(0.0, pfIso04.sumNeutralHadronEt + pfIso04.sumPhotonEt - 0.5 * pfIso04.sumPUPt);
       iso = absiso/(v.p4().pt());
       muon.pfRelIso04 = iso;
 

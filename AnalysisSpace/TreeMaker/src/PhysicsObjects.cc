@@ -8,6 +8,23 @@ vhtm::Candidate::Candidate():
 vhtm::Candidate::Candidate(float _pt, float _eta, float _phi):
   pt(_pt), eta(_eta), phi(_phi)
 {}
+vhtm::PackedPFCandidate::PackedPFCandidate():
+  pt(-999.),
+  eta(-999.),
+  phi(-999.),
+  energy(-999.),
+  pdgId(0),
+  charge(-999),
+  vx(-999.),
+  vy(-999.),
+  vz(-999.),
+  fromPV(-999),
+  dxy(-999.),
+  dz(-999.),
+  dxyError(-999.),
+  dzError(-999.)
+{}
+
 vhtm::Event::Event():
   run(0),
   event(0),
@@ -20,10 +37,17 @@ vhtm::Event::Event():
   isBPTX0(false),
   isBSCMinBias(false),
   isBSCBeamHalo(false),
-  isPrimaryVertex(false),
+  hasPrimaryVertex(false),
+  ntrk(-1),
+  ntrkPV(-1),
+  sumPtPV(0),
   //isBeamScraping(false),
-  rho(-1),
-  rhoNeutral(-1),
+  fGridRhoAll(-1),
+  fGridRhoFastjetAll(-1),
+  fGridRhoFastjetAllCalo(-1),
+  fGridRhoFastjetCentralCalo(-1),
+  fGridRhoFastjetCentralChargedPileUp(-1),
+  fGridRhoFastjetCentralNeutral(-1),
   nvtx(0)
 {
   nPU.clear();
@@ -81,10 +105,11 @@ vhtm::Electron::Electron():
   scPhiWidth(-999),
   scPreshowerEnergy(-999),
   pfRelIso(999),
+  sumChargedParticlePt(-999),
   sumChargedHadronPt(-999),
-  sumPUPt(-999),
   sumNeutralHadronEt(-999),
   sumPhotonEt(-999),
+  sumPUPt(-999),
   dB(999),
   edB(-999),
   dB3D(999),
@@ -227,11 +252,17 @@ vhtm::Muon::Muon():
   ecalIso(-999),
   hcalIso(-999),
   hoIso(-999),
-  pfChargedIsoR03(-999),
-  sumPUPt03(-999),
+  sumChargedParticlePtR03(-999),
+  sumChargedHadronPtR03(-999),
+  sumNeutralHadronEtR03(-999),
+  sumPhotonEtR03(-999),
+  sumPUPtR03(-999),
   pfRelIso03(99),
-  pfChargedIsoR04(-999),
-  sumPUPt04(-999),
+  sumChargedParticlePt(-999),
+  sumChargedHadronPt(-999),
+  sumNeutralHadronEt(-999),
+  sumPhotonEt(-999),
+  sumPUPt(-999),
   pfRelIso04(99),
   passID(false),
   dxyPV(999),
@@ -289,10 +320,12 @@ vhtm::Jet::Jet():
   neutralMultiplicity(-1),
   photonMultiplicity(-1),
   nConstituents(-1),
+  combinedSecondaryVertexBTag(-999),
   combinedInclusiveSecondaryVertexV2BJetTags(-999),
   combinedInclusiveSecondaryVertexBTag(-999),
   passLooseID(-1),
   passTightID(-1),
+  jpumva(-999),
   selbit(0) 
 {
   discrimap.clear();

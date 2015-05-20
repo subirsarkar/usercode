@@ -30,7 +30,7 @@ class ElectronBlock : public edm::EDAnalyzer
 private:
   virtual void beginJob() override;
   virtual void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
-  void calcIsoFromPF(const pat::Electron& v, edm::Handle<pat::PackedCandidateCollection>& pfs, double cone, std::vector<double>& iso);     
+  void calcIsoFromPF(const pat::Electron& v, const edm::Handle<pat::PackedCandidateCollection>& pfs, double cone, std::vector<double>& iso);     
 
 public:
   explicit ElectronBlock(const edm::ParameterSet& iConfig);

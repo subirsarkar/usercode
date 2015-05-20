@@ -20,6 +20,34 @@ namespace vhtm {
 
     ClassDef(Candidate, 1)
   };
+  class PackedPFCandidate: public TObject {
+  public:
+    PackedPFCandidate();
+    virtual ~PackedPFCandidate() {}
+
+    float pt;
+    float eta;
+    float phi;
+    float energy;
+    
+    int pdgId;
+    int charge;
+    
+    double vx;
+    double vy;
+    double vz;
+   
+    int fromPV;
+    // w.r.t PV
+    float dxy;
+    float dz;
+    float dxyError;
+    float dzError;
+
+    std::map<std::string,std::vector<double> > isolationMap;
+
+    ClassDef(PackedPFCandidate, 1)
+  };
   class Event: public TObject {
   public:
     Event();
@@ -37,12 +65,19 @@ namespace vhtm {
     bool isBPTX0;
     bool isBSCMinBias;
     bool isBSCBeamHalo;
-    bool isPrimaryVertex;
+    bool hasPrimaryVertex;
+    int ntrk;
+    int ntrkPV;
+    int sumPtPV;
     //bool isBeamScraping;
     bool passHBHENoiseFilter;
   
-    float rho;
-    float rhoNeutral;
+    double fGridRhoAll;
+    double fGridRhoFastjetAll;
+    double fGridRhoFastjetAllCalo;
+    double fGridRhoFastjetCentralCalo;
+    double fGridRhoFastjetCentralChargedPileUp;
+    double fGridRhoFastjetCentralNeutral;
     int nvtx; 
 
     std::vector<int> nPU;
@@ -119,10 +154,16 @@ namespace vhtm {
     float pfRelIso;
 
     // PFlow isolation variable
+    float chargedHadronIso;
+    float neutralHadronIso;
+    float photonIso;
+
+    // PFlow isolation variable
+    float sumChargedParticlePt;
     float sumChargedHadronPt;
-    float sumPUPt;
     float sumNeutralHadronEt;
     float sumPhotonEt;
+    float sumPUPt;
  
     // IP against PV
     double dB;
@@ -147,6 +188,8 @@ namespace vhtm {
     std::map<std::string, float> idmap;
     float mvaId; 
     int selbit;
+
+    std::map<std::string, std::vector<double> > isolationMap;
 
     ClassDef(Electron, 1)
   };
@@ -307,12 +350,21 @@ namespace vhtm {
     float ecalIso;
     float hcalIso;
     float hoIso;
-    float pfChargedIsoR03;
-    float sumPUPt03;
+
+    float sumChargedParticlePtR03;
+    float sumChargedHadronPtR03;
+    float sumNeutralHadronEtR03;
+    float sumPhotonEtR03;
+    float sumPUPtR03;
     float pfRelIso03;
-    float pfChargedIsoR04;
-    float sumPUPt04;
+
+    float sumChargedParticlePt;
+    float sumChargedHadronPt;
+    float sumNeutralHadronEt;
+    float sumPhotonEt;
+    float sumPUPt;
     float pfRelIso04;
+
     int passID;
     double dxyPV;
     double dzPV;
@@ -382,6 +434,7 @@ namespace vhtm {
     int photonMultiplicity;
     int nConstituents;
 
+    float combinedSecondaryVertexBTag;
     float combinedInclusiveSecondaryVertexV2BJetTags;
     float combinedInclusiveSecondaryVertexBTag;
 
@@ -390,6 +443,7 @@ namespace vhtm {
     int passLooseID;
     int passTightID;
   
+    float jpumva;
     int selbit;
 
     ClassDef(Jet, 1)

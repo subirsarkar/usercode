@@ -205,17 +205,6 @@ void EventBlock::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetup
     // More info about PU is here:
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupInformation#Accessing_PileupSummaryInfo_in_r
   }
-#if 0
-  // Access rho
-  edm::Handle<double> rho;
-  found = iEvent.getByToken(rhoToken_, rho);
-  if (found)
-  ev.rho = *rho;
-#endif
-  // Access rhoNeutral
-  edm::Handle<double> rhoNeutral;
-  found = iEvent.getByToken(rhoNeutralToken_, rhoNeutral);
-  if (found) ev.rhoNeutral = *rhoNeutral;
   
   // Vertex Container
   edm::Handle<reco::VertexCollection> spVertices;

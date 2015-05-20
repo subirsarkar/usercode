@@ -1,6 +1,7 @@
 #include "AnalysisSpace/TreeMaker/interface/PhysicsObjects.h"
 
 #include <vector>
+#include <map>
 
 namespace {
   struct dictionary {
@@ -18,6 +19,7 @@ namespace {
     vhtm::TriggerObject rvd;
     vhtm::Candidate rve;
     vhtm::Photon rvf;
+    vhtm::PackedPFCandidate rvg;
 
     std::vector<vhtm::Electron> vrv1;
     std::vector<vhtm::GenParticle> vrv2;
@@ -33,5 +35,8 @@ namespace {
     std::vector<vhtm::GenEvent> vrvd;
     std::vector<vhtm::Candidate> vrve;
     std::vector<vhtm::Photon> vrvf;
+    std::vector<vhtm::PackedPFCandidate> vrvg;
+    std::map<double, std::vector<double> > vrvm;
+    std::map<std::string, std::vector<double> > vrvn;
   };
 }

@@ -1,21 +1,21 @@
 <lcgdict>
   <class name="vhtm::Event" ClassVersion="1">
-    <version ClassVersion="1" checksum="2115605837" />
+    <version ClassVersion="1" checksum="2928039731" />
   </class>
   <class name="vhtm::GenEvent" ClassVersion="1">
     <version ClassVersion="1" checksum="3121422649" />
   </class>
   <class name="vhtm::Electron" ClassVersion="1">
-    <version ClassVersion="1" checksum="3025917482" />
+    <version ClassVersion="1" checksum="1385207014" />
   </class>
   <class name="vhtm::Tau" ClassVersion="1">
     <version ClassVersion="1" checksum="1787652030" />
   </class>
   <class name="vhtm::Muon" ClassVersion="1">
-    <version ClassVersion="1" checksum="767976495" />
+    <version ClassVersion="1" checksum="1982683854" />
   </class>
   <class name="vhtm::Jet" ClassVersion="1">
-    <version ClassVersion="1" checksum="3849654145"/>
+    <version ClassVersion="1" checksum="1844948477"/>
   </class>
   <class name="vhtm::MET" ClassVersion="1">
     <version ClassVersion="1" checksum="1632118922" />
@@ -41,6 +41,9 @@
   <class name="vhtm::Photon" ClassVersion="1">
     <version ClassVersion="1" checksum="2918387902" />
   </class>
+  <class name="vhtm::PackedPFCandidate" ClassVersion="1">
+    <version ClassVersion="1" checksum="3152060730" />
+  </class>
   <class name="std::vector<vhtm::Electron>" persistent="true" />
   <class name="std::vector<vhtm::Muon>" persistent="true" />
   <class name="std::vector<vhtm::Jet>" persistent="true" />
@@ -55,4 +58,7 @@
   <class name="std::vector<vhtm::GenEvent>" persistent="true" />
   <class name="std::vector<vhtm::Candidate>" persistent="true" />
   <class name="std::vector<vhtm::Photon>" persistent="true" />
+  <class name="std::vector<vhtm::PackedPFCandidate>" persistent="true" />
+  <class name="std::map<double, std::vector<double> >" persistent="true" />
+  <class name="std::map<std::string, std::vector<double> >" persistent="true" />
 </lcgdict>

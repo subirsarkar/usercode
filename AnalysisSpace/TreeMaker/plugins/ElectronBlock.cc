@@ -214,6 +214,7 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       // PF Isolation
       reco::GsfElectron::PflowIsolationVariables pfIso = v.pfIsolationVariables();
+      electron.sumChargedParticlePt = pfIso.sumChargedParticlePt;
       electron.sumChargedHadronPt = pfIso.sumChargedHadronPt;
       electron.sumPUPt = pfIso.sumPUPt;
       electron.sumNeutralHadronEt = pfIso.sumNeutralHadronEt;
@@ -317,31 +318,32 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electron.mvaId = mvaTrig_->mvaValue(v, false);
 
       if (pfs.isValid()) {
-	calcIsoFromPF(0.15, pfs, v, isotemp);
+	std::vector<double> isotemp;
+	calcIsoFromPF(v, pfs, 0.15, isotemp);
 	electron.isolationMap["c15"] = isotemp;
 
 	isotemp.clear();
-	calcIsoFromPF(0.20, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.20, isotemp);
 	electron.isolationMap["c20"] = isotemp;
 
 	isotemp.clear();
-	calcIsoFromPF(0.25, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.25, isotemp);
 	electron.isolationMap["c25"] = isotemp;
 
 	isotemp.clear();
-	calcIsoFromPF(0.30, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.30, isotemp);
 	electron.isolationMap["c30"] = isotemp;
 	
 	isotemp.clear();
-	calcIsoFromPF(0.35, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.35, isotemp);
 	electron.isolationMap["c35"] = isotemp;
 
 	isotemp.clear();
-	calcIsoFromPF(0.40, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.40, isotemp);
 	electron.isolationMap["c40"] = isotemp;
 
 	isotemp.clear();
-	calcIsoFromPF(0.45, pfs, v, isotemp);
+	calcIsoFromPF(v, pfs, 0.45, isotemp);
 	electron.isolationMap["c45"] = isotemp;
       }
       list_->push_back(electron);
@@ -366,16 +368,18 @@ void ElectronBlock::calcIsoFromPF(const pat::Electron& v,
 
   // now get a list of the PF candidates used to build this lepton, so to exclude them
   std::vector<reco::CandidatePtr> footprint;
-  for (unsigned int i = 0, i < v.numberOfSourceCandidatePtrs(); ++i) 
+  for (unsigned int i = 0; i < v.numberOfSourceCandidatePtrs(); ++i) 
     footprint.push_back(v.sourceCandidatePtr(i));
   
   // now loop on pf candidates
-  for (const auto& pf: *pfs) {
+  for (unsigned int i = 0; i < pfs->size(); ++i) {
+    const pat::PackedCandidate& pf = (*pfs)[i];
     int pdgid = std::abs(pf.pdgId());
     double pt = pf.pt();
     if (deltaR(pf, v) < cone) {
+
       // pfcandidate-based footprint removal
-      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfs,i)) != footprint.end()) continue;
+      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfs, i)) != footprint.end()) continue;
 
       if (pf.charge() == 0) {
         if (pt > 0.5) {
@@ -387,7 +391,7 @@ void ElectronBlock::calcIsoFromPF(const pat::Electron& v,
       } 
       else if (pf.fromPV() >= 2) {
 	chargedSum += pt;
-        if (pdg != 13 && pdg != 11) chargedHadSum += pt;
+        if (pdgid != 13 && pdgid != 11) chargedHadSum += pt;
       } 
       else
         if (pt > 0.5) pileupSum += pt;
