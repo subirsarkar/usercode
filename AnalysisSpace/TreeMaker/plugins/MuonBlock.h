@@ -10,6 +10,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 
 namespace vhtm {
   class Muon;
@@ -34,7 +35,6 @@ class MuonBlock : public edm::EDAnalyzer
   int fnMuon_;
 
   const int verbosity_;
-  const bool keepOnlyGlobalMuons_;
 
   const edm::InputTag muonTag_;
   const edm::InputTag vertexTag_;
@@ -47,5 +47,14 @@ class MuonBlock : public edm::EDAnalyzer
   const edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
   const edm::EDGetTokenT<reco::BeamSpot> bsToken_;
   const edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
+
+  // Use default criteria to choose the best muon
+  bool defaultBestMuon_;
+  // Cut on the pair of objects together
+  typedef std::pair<const reco::Muon*, const reco::Muon*> MuonPointerPair;
+  StringCutObjectSelector<MuonPointerPair, true> bestMuonSelector_;
+
+  bool isSameMuon(const pat::Muon& mu1, const pat::Muon& mu2) const;
+  bool isBetterMuon(const pat::Muon& mu1, const pat::Muon& mu2) const;
 };
 #endif

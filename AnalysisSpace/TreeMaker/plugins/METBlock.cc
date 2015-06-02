@@ -53,7 +53,7 @@ void METBlock::fillMET(const edm::Event& iEvent,
     edm::LogInfo("METBlock") << "Total # PAT METs: " << metColl->size();
     for (const pat::MET& v: *metColl) {
       if (list->size() == kMaxMET_) {
-        edm::LogInfo("METBlock") << "Too many PAT MET, nMET = " << list->size()
+        edm::LogInfo("METBlock") << "Too many pat::MET, nMET = " << list->size()
 				 << ", label: " << iTag;
         break;
       }
@@ -94,7 +94,7 @@ void METBlock::fillMET(const edm::Event& iEvent,
     edm::LogInfo("METBlock") << "Total # PAT METs: " << metColl->size();
     for (const reco::PFMET& v: *metColl) {
       if (list->size() == kMaxMET_) {
-	edm::LogInfo("METBlock") << "Too many PAT MET, nMET = " << list->size()
+	edm::LogInfo("METBlock") << "Too many PFMET, nMET = " << list->size()
                                  << ", label: " << iTag;
         break;
       }
@@ -108,7 +108,7 @@ void METBlock::fillMET(const edm::Event& iEvent,
     nMET = list->size();      
   }
   else {
-    edm::LogError("METBlock") << "Error! Failed to get pat::MET collection for label: "
+    edm::LogError("METBlock") << "Error! Failed to get reco::PFMET collection for label: "
                               << iTag;
   }
 }

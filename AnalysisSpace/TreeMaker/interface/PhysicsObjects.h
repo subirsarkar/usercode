@@ -337,15 +337,34 @@ namespace vhtm {
     bool isGlobalMuon;
     bool isTrackerMuon;
     bool isPFMuon;
+    bool isGhostCleaned;
+
     float eta;
     float phi;
     float pt;
     float p;
     float energy;
     float charge;
+    bool passID;
+
+    int muonBestTrackType;  
     double trkD0;
     double trkDz;
     float normChi2;
+
+    double dxyPV;
+    double dzPV;
+    double vtxDist3D;
+    int vtxIndex;
+    double vtxDistZ;
+
+    int pixHits;
+    int trkHits;
+    int muoHits;
+    int matches;
+    int trackerLayersWithMeasurement;
+    int numMuonStations;
+
     float trkIso;
     float ecalIso;
     float hcalIso;
@@ -365,22 +384,6 @@ namespace vhtm {
     float sumPUPt;
     float pfRelIso04;
 
-    int passID;
-    double dxyPV;
-    double dzPV;
-    double vtxDist3D;
-    int vtxIndex;
-    double vtxDistZ;
-    int pixHits;
-    int trkHits;
-    int muoHits;
-    int matches;
-    int trackerLayersWithMeasurement;
-
-    float vx;
-    float vy;
-    float vz;
-
     double dB; // PV2D
     double edB; 
     double dB3D;
@@ -392,17 +395,19 @@ namespace vhtm {
     int nChambers;
     int nMatches;
     int nMatchedStations;
-
     unsigned int stationMask;
     unsigned int stationGapMaskDistance;
     unsigned int stationGapMaskPull;
-
     bool muonID;
 
-    int selbit;
+    float vx;
+    float vy;
+    float vz;
 
     std::map<std::string, std::vector<double> > isolationMap;
     int nSegments;
+
+    int selbit;
 
     ClassDef(Muon, 1)
   };
