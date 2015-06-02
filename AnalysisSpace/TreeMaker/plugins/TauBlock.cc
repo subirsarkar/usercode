@@ -73,6 +73,8 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       tau.pt     = v.pt();
       tau.energy = v.energy();
       tau.charge = v.charge();
+      tau.mass   = v.p4().M();
+
       if (v.leadChargedHadrCand().isNonnull()) {
         // We know that it returns a PackedCandidate
         const pat::PackedCandidate& trk = dynamic_cast<const pat::PackedCandidate&>(*v.leadChargedHadrCand());
@@ -80,12 +82,12 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
         if (primaryVertices.isValid()) {
           edm::LogInfo("TauBlock") << "Total # Primary Vertices: " 
                                    << primaryVertices->size();
-
+	  
           // IP of leadChargedHadrCand wrt event PV
           const reco::Vertex& vit = primaryVertices->front();
           tau.dxyPV = trk.dxy(vit.position());
           tau.dzPV  = trk.dz(vit.position());
-
+	  
           // IP of leadChargedHadrCand wrt closest PV
           // Vertex association
           double minVtxDist3D = 9999.;
@@ -224,7 +226,6 @@ void TauBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       tau.vz = vertex.z();
 
       tau.zvertex = v.vz(); // distance from the primary vertex
-      tau.mass    = v.p4().M();
 
       tau.dxySig = v.dxy_Sig();
 

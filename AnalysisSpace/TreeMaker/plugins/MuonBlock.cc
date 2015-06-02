@@ -114,15 +114,29 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.energy  = v.energy();
       muon.charge  = v.charge();
       muon.passID   = v.muonID(muonID_) ? true : false;
+      muon.muonBestTrackType = v.muonBestTrackType();
+
+      double trkd0 = 99;
+      double trkdz = 99;
+      float normChi2 = 99;
+
+      double dxyWrtPV = 99.;
+      double dzWrtPV = 99.;
+
+      double minVtxDist3D = 99.;
+      int indexVtx = -1;
+      double vertexDistZ = 99.;
+
+      int pixHits = -1;
+      int trkHits = -1;
+      int muoHits = -1;
+      int matches = -1;
+      int trackerLayersWithMeasurement = -1;
 
       reco::TrackRef tk = v.muonBestTrack();
-      bool hasTrkRef = tk.isNonnull(); 
-
-      double dxyWrtPV = 999.;
-      double dzWrtPV = 999.;
-      if (hasTrkRef) {
-	double trkd0 = tk->d0();
-	double trkdz = tk->dz();
+      if (tk.isNonnull()) {
+	trkd0 = tk->d0();
+	trkdz = tk->dz();
 	if (bsCorr_) {
 	  if (beamSpot.isValid()) {
 	    trkd0 = -(tk->dxy(beamSpot->position()));
@@ -133,10 +147,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					<< bsTag_;
 	  }
 	}
-        muon.muonBestTrackType = v.muonBestTrackType();
-	muon.trkD0 = trkd0;
-	muon.trkDz = trkdz;
-	muon.normChi2 = tk->normalizedChi2();
+	normChi2 = tk->normalizedChi2();
 	
 	if (primaryVertices.isValid()) {
 	  edm::LogInfo("MuonBlock") << "Total # Primary Vertices: " << primaryVertices->size();
@@ -144,13 +155,8 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  const reco::Vertex& vit = primaryVertices->front(); // Highest sumPt vertex
 	  dxyWrtPV = tk->dxy(vit.position());
 	  dzWrtPV  = tk->dz(vit.position());
-	  muon.dxyPV = dxyWrtPV;
-	  muon.dzPV  = dzWrtPV;
 	  
 	  // Vertex association
-	  double minVtxDist3D = 9999.;
-	  int indexVtx = -1;
-	  double vertexDistZ = 9999.;
 	  for (auto vit = primaryVertices->begin(); vit != primaryVertices->end(); ++vit) {
 	    double dxy = tk->dxy(vit->position());
 	    double dz = tk->dz(vit->position());
@@ -161,9 +167,6 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	      vertexDistZ = dz;
 	    }
 	  }
-	  muon.vtxDist3D = minVtxDist3D;
-	  muon.vtxIndex = indexVtx;
-	  muon.vtxDistZ = vertexDistZ;
 	}
 	else {
 	  edm::LogError("MuonBlock") << "Error >> Failed to get reco::VertexCollection for label: "
@@ -171,16 +174,30 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	// Hit pattern
 	const reco::HitPattern& hitp = tk->hitPattern();
-	muon.pixHits = hitp.numberOfValidPixelHits();
-	muon.trkHits = hitp.numberOfValidTrackerHits();
-	muon.muoHits = hitp.numberOfValidMuonHits();
-	muon.matches = v.numberOfMatches();
-	muon.trackerLayersWithMeasurement = hitp.trackerLayersWithMeasurement();
+	pixHits = hitp.numberOfValidPixelHits();
+	trkHits = hitp.numberOfValidTrackerHits();
+	muoHits = hitp.numberOfValidMuonHits();
+	matches = v.numberOfMatches();
+	trackerLayersWithMeasurement = hitp.trackerLayersWithMeasurement();
       }	
+      muon.trkD0 = trkd0;
+      muon.trkDz = trkdz;
+      muon.normChi2 = normChi2;
+      muon.dxyPV = dxyWrtPV;
+      muon.dzPV  = dzWrtPV;
+      muon.vtxDist3D = minVtxDist3D;
+      muon.vtxIndex = indexVtx;
+      muon.vtxDistZ = vertexDistZ;
+      
+      muon.pixHits = pixHits;
+      muon.trkHits = trkHits;
+      muon.muoHits = muoHits;
+      muon.matches = matches;
+      muon.trackerLayersWithMeasurement = trackerLayersWithMeasurement;
       int numMuonStations = 0;
       unsigned int stationMask = static_cast<unsigned int>(v.stationMask(reco::Muon::SegmentAndTrackArbitration));
       for (int i = 0; i < 8; ++i)  // eight stations, eight bits
-	if (stationMask & (1<<i)) ++numMuonStations;
+	if (stationMask & (1 << i)) ++numMuonStations;
       muon.numMuonStations = numMuonStations;      
 
       // Isolation
@@ -227,9 +244,7 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.stationGapMaskDistance  = v.stationGapMaskDistance();
       muon.stationGapMaskPull      = v.stationGapMaskPull();
       
-      double normChi2 = muon.normChi2;
       double ptError = tk->ptError()/tk->pt();
-      
       bool muonID = v.isGlobalMuon() && 
 	v.isTrackerMuon() && 
 	muon.isGlobalMuonPromptTight && 
