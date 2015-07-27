@@ -109,8 +109,8 @@ void MuonBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       muon.normChi2 = (hasGlobalTrk) ? v.normChi2() : (tk->ndof() > 0 ? tk->chi2()/tk->ndof() : 999);
       muon.passID   = v.muonID(muonID_) ? true : false;
 
-      double dxyWrtPV = -99.;
-      double dzWrtPV = -99.;
+      double dxyWrtPV = 99.;
+      double dzWrtPV = 99.;
       if (primaryVertices.isValid()) {
         edm::LogInfo("MuonBlock") << "Total # Primary Vertices: " << primaryVertices->size();
 

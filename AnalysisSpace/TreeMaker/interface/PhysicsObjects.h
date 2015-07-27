@@ -385,11 +385,12 @@ namespace vhtm {
     float combinedInclusiveSecondaryVertexV2BJetTags;
     float combinedInclusiveSecondaryVertexBTag;
 
-    std::map<std::string, float> discrimap;
-
     int passLooseID;
     int passTightID;
   
+    std::map<std::string, float> discrimap;
+    float jpumva;
+
     int selbit;
 
     ClassDef(Jet, 1)

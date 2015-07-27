@@ -293,6 +293,7 @@ vhtm::Jet::Jet():
   combinedInclusiveSecondaryVertexBTag(-999),
   passLooseID(-1),
   passTightID(-1),
+  jpumva(-99),
   selbit(0) 
 {
   discrimap.clear();

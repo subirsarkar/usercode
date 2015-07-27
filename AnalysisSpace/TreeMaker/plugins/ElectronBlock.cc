@@ -93,11 +93,11 @@ void ElectronBlock::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       electron.eOverPOut   = v.eEleClusterOverPout();   
   
       float nMissingHits = 0;
-      double dxyWrtPV = -99.;
-      double dzWrtPV = -99.;
+      double dxyWrtPV = 99.;
+      double dzWrtPV = 99.;
 
-      double trkd0 = -999;
-      double trkdz = -999;
+      double trkd0 = 999;
+      double trkdz = 999;
       float trackPt = -99;
       float trackP = -99;
       int pixHits = -1;
